@@ -1,5 +1,5 @@
 <meta charset="utf-8"/>
-<!DOCTYPE html>
+<!DOCTYPE htm>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +7,7 @@
 .rotate {
   animation: rotation 8s infinite linear;
 }
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
@@ -15,6 +16,7 @@
     transform: rotate(359deg);
   }
 }
+
 div.showhim1 {
     display: none;
     border:1px solid #000;
@@ -22,9 +24,12 @@ div.showhim1 {
     width:290px;
     margin-left:10px;
 }
+
 			
 * {box-sizing: border-box}
+
 /* Set height of body and the document to 100% */
+
 body,html {
   background-color: black;
   font-family: 'Roboto', sans-serif;
@@ -32,6 +37,7 @@ body,html {
   margin: 0;
   font-family: Arial;
 }
+
 /* Style tab links */
 .tablink {
   background-color: #555;
@@ -44,6 +50,7 @@ body,html {
   font-size: 17px;
   width: 25%;
 }
+
 <!--
 .buttonabout {
   background-color: black;
@@ -59,6 +66,8 @@ body,html {
 .tablink:hover {
   background-color: #777;
 }*/
+
+
 /* Style the tab content (and add height:100% for full page content) */
 .tabcontent {
   color: white;
@@ -66,6 +75,7 @@ body,html {
   padding: 100px 20px;
   height: 100%;
 }
+
 #About {background-color: black;}
 #Odi {background-color: black;}
 #Test {background-color: black;}
@@ -85,9 +95,11 @@ color: white;
 .tick text{
   stroke: #fff;
 }
+
 .tick text {
   color: #fff;
 }
+
 .x-axis path,
 .y-axis path {
   stroke: #fff;
@@ -121,6 +133,7 @@ color: white;
             fill: Red;
             opacity: 0.8;
         }
+
         .axis path,
         .axis line {
             fill: none;
@@ -130,6 +143,7 @@ color: white;
 		.axisWhite text{
   fill: white;
 }
+
      .selected {
           font-weight: bold;
      }
@@ -146,6 +160,7 @@ color: white;
 		
           .small { font-size: 10px; font-family: arial; }
           .bar { cursor: pointer}
+
 #chart {
   width: 800px;
   height: 500px;
@@ -161,12 +176,14 @@ color: white;
   right: 10px;
   top: 10px;
 }
+
 .inline {
   display: inline-block;
   vertical-align: top;
   margin: 5px;
   color: #999;
 }
+
 #legend div.test,
 #legend div.odi{
   width: 15px;
@@ -175,6 +192,7 @@ color: white;
 #legend div.test {
   background-color: #2ca02c;
 }
+
 #legend div.odi {
   background-color: #dc3912;
 }
@@ -183,14 +201,19 @@ color: white;
             font: 10px sans-serif;
             shape-rendering: crispEdges;
         }
+
           .small { font-size: 10px; font-family: arial; }
           .bar { cursor: pointer}
+
+
 circle {
   stroke: #ccc;
 }
+
 circle:hover {
   cursor: pointer;
 }
+
 div.tooltip {
   color: #fff;
   position: absolute;
@@ -206,10 +229,12 @@ div.tooltip {
   border-radius: 6px;
   pointer-events: none;
 }
+
 .container {
   position: relative;
   width: 50%;
 }
+
 .overlay {
   position: absolute;
   top: 0;
@@ -221,9 +246,12 @@ div.tooltip {
   opacity: 0;
   transition: .5s ease;
 }
+
 .container:hover .overlay {
   opacity: 1;
 }
+
+
 #one {
   position: absolute;
   border: 1px #333 solid;
@@ -257,56 +285,82 @@ div.tooltip {
 <svg id="chart1" width="850" height="400"></svg>
 
 <script>
+
 d3.csv("stackedbar.csv").then(d => chart(d))
+
 function chart(csv) {
+
 	var keys = csv.columns.slice(2);
+
 	var year   = [...new Set(csv.map(d => d.Year))]
 	var states = [...new Set(csv.map(d => d.State))]
+
 	var options = d3.select("#year").selectAll("option")
 		.data(year)
 	.enter().append("option")
 		.text(d => d)
+
 	var svg = d3.select("#chart"),
 		margin = {top: 35, left: 35, bottom: 0, right: 0},
 		width = +svg.attr("width") - margin.left - margin.right,
 		height = +svg.attr("height") - margin.top - margin.bottom;
+
 	var x = d3.scaleBand()
 		.range([margin.left, width - margin.right])
 		.padding(0.1)
+
 	var y = d3.scaleLinear()
 		.rangeRound([height - margin.bottom, margin.top])
+
 	var xAxis = svg.append("g")
 		.attr("transform", `translate(0,${height - margin.bottom})`)
 		.attr("class", "x-axis")
 		
+
 	var yAxis = svg.append("g")
 		.attr("transform", `translate(${margin.left},0)`)
 		.attr("class", "y-axis")
+
 	var z = d3.scaleOrdinal()
 		.range(["red", "green"])
 		.domain(keys);
+
 	update(d3.select("#year").property("value"), 0)
+
 	function update(input, speed) {
+
 		var data = csv.filter(f => f.Year == input)
+
 		data.forEach(function(d) {
 			d.total = d3.sum(keys, k => +d[k])
 			return d
 		})
+
 		y.domain([0, d3.max(data, d => d3.sum(keys, k => +d[k]))]).nice();
+
 		svg.selectAll(".y-axis").transition().duration(speed)
 			.call(d3.axisLeft(y).ticks(null, "s"))
+
+
 		x.domain(data.map(d => d.State));
+
 		svg.selectAll(".x-axis").transition().duration(speed)
 			.call(d3.axisBottom(x).tickSizeOuter(0))
+
 		var group = svg.selectAll("g.layer")
 			.data(d3.stack().keys(keys)(data), d => d.key)
+
 		group.exit().remove()
+
 		group.enter().append("g")
 			.classed("layer", true)
 			.attr("fill", d => z(d.key));
+
 		var bars = svg.selectAll("g.layer").selectAll("rect")
 			.data(d => d, e => e.data.State);
+
 		bars.exit().remove()
+
 		bars.enter().append("rect")
 			.attr("width", x.bandwidth())
 			.merge(bars)
@@ -314,11 +368,14 @@ function chart(csv) {
 			.attr("x", d => x(d.data.State))
 			.attr("y", d => y(d[1]))
 			.attr("height", d => y(d[0]) - y(d[1]));
+
   
 		var text = svg.selectAll(".text")
 			.data(data, d => d.State)
    ;
+
 		text.exit().remove()
+
 		text.enter().append("text")
 			.attr("class", "text")
 			.attr("fill","white")
@@ -332,6 +389,7 @@ function chart(csv) {
 var legend = svg.append('g')
                 .attr('class', 'legend')
                 .attr('transform', 'translate(' + (700) + ', 0)');
+
             legend.selectAll('rect')
                 .data(keys)
                 .enter()
@@ -362,40 +420,53 @@ var legend = svg.append('g')
                 .attr('alignment-baseline', 'hanging');			
 			
 	}
+
 	var select = d3.select("#year")
 		.on("change", function() {
 			update(this.value, 750)
 		})
 };
+
 ///// scatterplot
+
 var data = [{"num":1,"score":110,"against":"Australia","position":"2","inning":"1","strikeRate":"84.61","venue":" R. Premadasa Stadium, Colombo","date":"09 Sep 1994","result":"Won[64]","dateObj":"9-Sep-1994"},{"num":2,"score":115,"against":"New Zealand","position":"2","inning":"2","strikeRate":"84.55","venue":"IPCL Sports Complex Ground, Vadodara","date":"28 October 1994","result":"Won[65]","dateObj":"28-Oct-1994"},{"num":3,"score":105,"against":"West Indies","position":"2","inning":"1","strikeRate":"78.35","venue":"Sawai Mansingh Stadium, Jaipur","date":"11 November 1994","result":"Won[66]","dateObj":"11-Nov-1994"},{"num":4,"score":112,"against":"Sri Lanka","position":"2","inning":"2","strikeRate":"104.67","venue":" Sharjah Cricket Association Stadium, Sharjah","date":"09 April 1995","result":"Won[67]","dateObj":"9-Apr-1995"},{"num":5,"score":127,"against":"Kenya","position":"2","inning":"2","strikeRate":"92.02","venue":"Barabati Stadium, Cuttack","date":"18 February 1996","result":"Won[68]","dateObj":"18-Feb-1996"},{"num":6,"score":137,"against":"Sri Lanka","position":"2","inning":"1","strikeRate":"100.00","venue":"Feroz Shah Kotla, New Delhi","date":"02 March 1996","result":"Lost[69]","dateObj":"2-Mar-1996"},{"num":7,"score":100,"against":"Pakistan","position":"2","inning":"1","strikeRate":"90.09","venue":"Padang, Singapore","date":"05 April 1996","result":"Lost[70]","dateObj":"5-Apr-1996"},{"num":8,"score":118,"against":"Pakistan","position":"2","inning":"1","strikeRate":"84.28","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"15 April 1996","result":"Won[71]","dateObj":"15-Apr-1996"},{"num":9,"score":110,"against":"Sri Lanka","position":"2","inning":"1","strikeRate":"79.71","venue":"R. Premadasa Stadium, Colombo","date":"28 August 1996","result":"Lost[72]","dateObj":"28-Aug-1996"},{"num":10,"score":114,"against":"South Africa","position":"1","inning":"1","strikeRate":"90.47","venue":"Wankhede Stadium, Mumbai","date":"14 December 1996","result":"Won[73]","dateObj":"14-Dec-1996"},{"num":11,"score":104,"against":"Zimbabwe","position":"1","inning":"1","strikeRate":"107.21","venue":"Willowmoore Park, Benoni","date":"09 February 1997","result":"Won[74]","dateObj":"9-Feb-1997"},{"num":12,"score":117,"against":"New Zealand","position":"2","inning":"2","strikeRate":"85.40","venue":"M. Chinnaswamy Stadium, Bangalore","date":"14 May 1997","result":"Won[75]","dateObj":"14-May-1997"},{"num":13,"score":100,"against":"Australia","position":"2","inning":"2","strikeRate":"112.35","venue":"Green Park Stadium, Kanpur","date":"07 April 1998","result":"Won[76]","dateObj":"7-Apr-1998"},{"num":14,"score":143,"against":"Australia","position":"2","inning":"2","strikeRate":"109.16","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"22 April 1998","result":"Lost[77]","dateObj":"22-Apr-1998"},{"num":15,"score":134,"against":"Australia","position":"2","inning":"2","strikeRate":"102.29","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"24 April 1998","result":"Won[78]","dateObj":"24-Apr-1998"},{"num":16,"score":100,"against":"Kenya","position":"2","inning":"2","strikeRate":"97.08","venue":"Eden Gardens, Kolkata","date":"31 May 1998","result":"Won[79]","dateObj":"31-May-1998"},{"num":17,"score":128,"against":"Sri Lanka","position":"2","inning":"1","strikeRate":"97.70","venue":"R. Premadasa Stadium, Colombo","date":"07 July 1998","result":"Won[80]","dateObj":"7-Jul-1998"},{"num":18,"score":127,"against":"Zimbabwe","position":"2","inning":"2","strikeRate":"97.69","venue":"Queens Sports Club, Bulawayo","date":"26 September 1998","result":"Won[81]","dateObj":"26-Sep-1998"},{"num":19,"score":141,"against":"Australia","position":"2","inning":"1","strikeRate":"110.15","venue":"Bangabandhu Stadium, Dhaka","date":"28 October 1998","result":"Won[82]","dateObj":"28-Oct-1998"},{"num":20,"score":118,"against":"Zimbabwe","position":"2","inning":"2","strikeRate":"105.35","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"08 November 1998","result":"Won[83]","dateObj":"8-Nov-1998"},{"num":21,"score":124,"against":"Zimbabwe","position":"2","inning":"2","strikeRate":"134.78","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"13 November 1998","result":"Won[84]","dateObj":"13-Nov-1998"},{"num":22,"score":140,"against":"Kenya","position":"4","inning":"1","strikeRate":"138.61","venue":"County Ground, Bristol","date":"23 May 1999","result":"Won[85]","dateObj":"23-May-1999"},{"num":23,"score":120,"against":"Sri Lanka","position":"1","inning":"1","strikeRate":"85.10","venue":"Sinhalese Sports Club Ground, Colombo","date":"29 August 1999","result":"Won[86]","dateObj":"29-Aug-1999"},{"num":24,"score":186,"against":"New Zealand","position":"2","inning":"1","strikeRate":"124.00","venue":"Lal Bahadur Shastri Stadium, Hyderabad","date":"08 November 1999","result":"Won[87]","dateObj":"8-Nov-1999"},{"num":25,"score":122,"against":"South Africa","position":"2","inning":"2","strikeRate":"88.40","venue":"IPCL Sports Complex Ground, Vadodara","date":"17 March 2000","result":"Won[88]","dateObj":"17-Mar-2000"},{"num":26,"score":101,"against":"Sri Lanka","position":"2","inning":"1","strikeRate":"72.14","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"20 October 2000","result":"Lost[89]","dateObj":"20-Oct-2000"},{"num":27,"score":146,"against":"Zimbabwe","position":"2","inning":"1","strikeRate":"95.42","venue":"Barkatullah Khan Stadium, Jodhpur","date":"08 December 2000","result":"Lost[90]","dateObj":"8-Dec-2000"},{"num":28,"score":139,"against":"Australia","position":"2","inning":"1","strikeRate":"111.20","venue":"Nehru Stadium, Indore","date":"31 March 2001","result":"Won[91]","dateObj":"31-Mar-2001"},{"num":29,"score":122,"against":"West Indies","position":"2","inning":"2","strikeRate":"93.12","venue":"Harare Sports Club, Harare","date":"04 July 2001","result":"Won[92]","dateObj":"4-Jul-2001"},{"num":30,"score":101,"against":"South Africa","position":"2","inning":"1","strikeRate":"78.29","venue":"New Wanderers Stadium, Johannesburg","date":"05 October 2001","result":"Lost[93]","dateObj":"5-Oct-2001"},{"num":31,"score":146,"against":"Kenya","position":"2","inning":"1","strikeRate":"110.60","venue":"Boland Park, Paarl","date":"24 October 2001","result":"Won[94]","dateObj":"24-Oct-2001"},{"num":32,"score":105,"against":"England","position":"4","inning":"1","strikeRate":"97.22","venue":"Riverside Ground, Chester-le-Street","date":"04 July 2002","result":"N/R[95]","dateObj":"4-Jul-2002"},{"num":33,"score":113,"against":"Sri Lanka","position":"4","inning":"1","strikeRate":"110.78","venue":"County Ground, Bristol","date":"11 July 2002","result":"Won[96]","dateObj":"11-Jul-2002"},{"num":34,"score":152,"against":"Namibia","position":"2","inning":"1","strikeRate":"100.66","venue":"City Oval, Pietermaritzburg","date":"23 February 2003","result":"Won[97]","dateObj":"23-Feb-2003"},{"num":35,"score":100,"against":"Australia","position":"2","inning":"1","strikeRate":"84.03","venue":"Roop Singh Stadium, Gwalior","date":"26 October 2003","result":"Won[98]","dateObj":"26-Oct-2003"},{"num":36,"score":102,"against":"New Zealand","position":"2","inning":"1","strikeRate":"112.08","venue":"Lal Bahadur Shastri Stadium, Hyderabad","date":"15 November 2003","result":"Won[99]","dateObj":"15-Nov-2003"},{"num":37,"score":141,"against":"Pakistan","position":"2","inning":"2","strikeRate":"104.44","venue":"Rawalpindi Cricket Stadium, Rawalpindi","date":"16 March 2004","result":"Lost[100]","dateObj":"16-Mar-2004"},{"num":38,"score":123,"against":"Pakistan","position":"2","inning":"1","strikeRate":"94.61","venue":"Sardar Patel Stadium, Motera, Ahmedabad","date":"12 April 2005","result":"Lost[101]","dateObj":"12-Apr-2005"},{"num":39,"score":100,"against":"Pakistan","position":"2","inning":"1","strikeRate":"88.49","venue":"Arbab Niaz Stadium, Peshawar","date":"06 February 2006","result":"Lost[102]","dateObj":"6-Feb-2006"},{"num":40,"score":141,"against":"West Indies","position":"2","inning":"1","strikeRate":"95.27","venue":"Kinrara Academy Oval, Kuala Lumpur","date":"14 September 2006","result":"Lost[103]","dateObj":"14 Sep 2006"},{"num":41,"score":100,"against":"West Indies","position":"4","inning":"1","strikeRate":"131.57","venue":"IPCL Sports Complex Ground, Vadodara","date":"31 January 2007","result":"Won[104]","dateObj":"31-Jan-2007"},{"num":42,"score":117,"against":"Australia","position":"1","inning":"2","strikeRate":"97.5","venue":"Sydney Cricket Ground, Sydney","date":"02 March 2008","result":"Won[105]","dateObj":"2-Mar-2008"},{"num":43,"score":163,"against":"New Zealand","position":"2","inning":"1","strikeRate":"122.55","venue":"AMI Stadium, Christchurch","date":"08 March 2009","result":"Won[106]","dateObj":"8-Mar-2009"},{"num":44,"score":138,"against":"Sri Lanka","position":"1","inning":"1","strikeRate":"103.76","venue":"R. Premadasa Stadium, Colombo","date":"14 September 2009","result":"Won[107]","dateObj":"14-Sep-2009"},{"num":45,"score":175,"against":"Australia","position":"2","inning":"2","strikeRate":"124.11","venue":"Rajiv Gandhi International Stadium, Hyderabad","date":"05 November 2009","result":"Lost[108]","dateObj":"5-Nov-2009"},{"num":46,"score":200,"against":"South Africa","position":"2","inning":"1","strikeRate":"136.05","venue":"Roop Singh Stadium, Gwalior","date":"24 February 2010","result":"Won[109]","dateObj":"24-Feb-2010"},{"num":47,"score":120,"against":"England","position":"2","inning":"1","strikeRate":"104.35","venue":"M. Chinnaswamy Stadium, Bangalore","date":"27 February 2011","result":"Tied[110]","dateObj":"27-Feb-2011"},{"num":48,"score":111,"against":"South Africa","position":"2","inning":"1","strikeRate":"109.90","venue":"VCA Stadium, Nagpur","date":"12 March 2011","result":"Lost[111]","dateObj":"12-Mar-2011"},{"num":49,"score":114,"against":"Bangladesh","position":"2","inning":"1","strikeRate":"77.55","venue":"Sher-e-Bangla National Stadium, Mirpur","date":"16 March 2012","result":"Lost[112]","dateObj":"16-Mar-2012"},{"num":1,"score":119,"against":"England","position":"2","inning":"2","venue":"Old Trafford, Manchester","date":"14 August 1990","result":"Drawn[10]","testMatch":true,"dateObj":"14-Aug-1990"},{"num":2,"score":148,"against":"Australia","position":"1","inning":"3","venue":"Sydney Cricket Ground, Sydney","date":"06 January 1992","result":"Drawn[11]","testMatch":true,"dateObj":"6-Jan-1992"},{"num":3,"score":114,"against":"Australia","position":"1","inning":"5","venue":" WACA Ground, Perth","date":"03 February 1992","result":"Lost[12]","testMatch":true,"dateObj":"3-Feb-1992"},{"num":4,"score":111,"against":"South Africa","position":"1","inning":"2","venue":"Wanderers Stadium, Johannesburg","date":"28 November 1992","result":"Drawn[13]","testMatch":true,"dateObj":"28-Nov-1992"},{"num":5,"score":165,"against":"England","position":"1","inning":"2","venue":"M. A. Chidambaram Stadium, Chennai","date":"12 February 1993","result":"Won[14]","testMatch":true,"dateObj":"12-Feb-1993"},{"num":6,"score":104,"against":"Sri Lanka","position":"2","inning":"2","venue":"Sinhalese Sports Club Ground, Colombo","date":"31 July 1993","result":"Won[15]","testMatch":true,"dateObj":"31-Jul-1993"},{"num":7,"score":142,"against":"Sri Lanka","position":"1","inning":"1","venue":"K. D. Singh Babu Stadium, Lucknow","date":"19 January 1994","result":"Won[16]","testMatch":true,"dateObj":"19-Jan-1994"},{"num":8,"score":179,"against":"West Indies","position":"1","inning":"2","venue":"Vidarbha Cricket Association Ground, Nagpur","date":"02 December 1994","result":"Drawn[17]","testMatch":true,"dateObj":"2-Dec-1994"},{"num":9,"score":122,"against":"England","position":"2","inning":"1","venue":"Edgbaston, Birmingham","date":"08 June 1996","result":"Lost[18]","testMatch":true,"dateObj":"8-Jun-1996"},{"num":10,"score":177,"against":"England","position":"1","inning":"3","venue":" Trent Bridge, Nottingham","date":"05 July 1996","result":"Drawn[19]","testMatch":true,"dateObj":"5-Jul-1996"},{"num":11,"score":169,"against":"South Africa","position":"1","inning":"2","venue":"Newlands Cricket Ground, Cape Town","date":"04 January 1997","result":"Lost[20]","testMatch":true,"dateObj":"4-Jan-1997"},{"num":12,"score":143,"against":"Sri Lanka","position":"1","inning":"1","venue":"R. Premadasa Stadium, Colombo","date":"03 August 1997","result":"Drawn[21]","testMatch":true,"dateObj":"3-Aug-1997"},{"num":13,"score":139,"against":"Sri Lanka","position":"1","inning":"2","venue":"Sinhalese Sports Club Ground, Colombo","date":"11 August 1997","result":"Drawn;[22]","testMatch":true,"dateObj":"11-Aug-1997"},{"num":14,"score":148,"against":"Sri Lanka","position":"1","inning":"3","venue":"Wankhede Stadium, Mumbai","date":"04 December 1997","result":"Drawn[23]","testMatch":true,"dateObj":"4-Dec-1997"},{"num":15,"score":155,"against":"Australia","position":"2","inning":"1","venue":"M. A. Chidambaram Stadium, Chennai","date":"09 March 1998","result":"Won[24]","testMatch":true,"dateObj":"9-Mar-1998"},{"num":16,"score":177,"against":"Australia","position":"1","inning":"3","venue":"M. Chinnaswamy Stadium, Bangalore","date":"26 March 1998","result":"Lost[25]","testMatch":true,"dateObj":"26-Mar-1998"},{"num":17,"score":113,"against":"New Zealand","position":"2","inning":"2","venue":"Basin Reserve, Wellington","date":"29 December 1998","result":"Lost[26]","testMatch":true,"dateObj":"29-Dec-1998"},{"num":18,"score":136,"against":"Pakistan","position":"2","inning":"1","venue":"M. A. Chidambaram Stadium, Chennai","date":"31 January 1999","result":"Lost[27]","testMatch":true,"dateObj":"31-Jan-1999"},{"num":19,"score":124,"against":"Sri Lanka","position":"2","inning":"2","venue":"Sinhalese Sports Club Ground, Colombo","date":"28 February 1999","result":"Drawn[28]","testMatch":true,"dateObj":"28-Feb-1999"},{"num":20,"score":126,"against":"New Zealand","position":"2","inning":"1","venue":"Punjab Cricket Association Stadium, Mohali","date":"13 October 1999","result":"Drawn[29]","testMatch":true,"dateObj":"13-Oct-1999"},{"num":21,"score":217,"against":"New Zealand","position":"1","inning":"3","venue":"Sardar Patel Stadium, Motera, Ahmedabad","date":"30 October 1999","result":"Drawn[30]","testMatch":true,"dateObj":"30-Oct-1999"},{"num":22,"score":116,"against":"Australia","position":"1","inning":"2","venue":"Melbourne Cricket Ground, Melbourne","date":"28 December 1999","result":"Lost[31]","testMatch":true,"dateObj":"28-Dec-1999"},{"num":23,"score":122,"against":"Zimbabwe","position":"1","inning":"1","venue":"Feroz Shah Kotla, New Delhi","date":"21 November 2000","result":"Won[32]","testMatch":true,"dateObj":"21-Nov-2000"},{"num":24,"score":201,"against":"Zimbabwe","position":"1","inning":"2","venue":"Vidarbha Cricket Association Ground, Nagpur","date":"26 November 2000","result":"Drawn[33]","testMatch":true,"dateObj":"26-Nov-2000"},{"num":25,"score":126,"against":"Australia","position":"1","inning":"3","venue":"M. A. Chidambaram Stadium, Chennai","date":"20 March 2001","result":"Won[34]","testMatch":true,"dateObj":"20-Mar-2001"},{"num":26,"score":155,"against":"South Africa","position":"1","inning":"1","venue":" Goodyear Park, Bloemfontein","date":"03 November 2001","result":"Lost[35]","testMatch":true,"dateObj":"3-Nov-2001"},{"num":27,"score":103,"against":"England","position":"1","inning":"2","venue":"Sardar Patel Stadium, Ahmedabad","date":"13 December 2001","result":"Drawn[36]","testMatch":true,"dateObj":"13-Dec-2001"},{"num":28,"score":176,"against":"Zimbabwe","position":"1","inning":"1","venue":"Vidarbha Cricket Association Ground, Nagpur","date":"24 February 2002","result":"Won[37]","testMatch":true,"dateObj":"24-Feb-2002"},{"num":29,"score":117,"against":"West Indies","position":"1","inning":"2","venue":"Queen's Park Oval, Port of Spain","date":"20 April 2002","result":"Won[38]","testMatch":true,"dateObj":"20-Apr-2002"},{"num":30,"score":193,"against":"England","position":"1","inning":"3","venue":"Headingley, Leeds","date":"23 August 2002","result":"Won[39]","testMatch":true,"dateObj":"23-Aug-2002"},{"num":31,"score":176,"against":"West Indies","position":"2","inning":"3","venue":"Eden Gardens, Kolkata","date":"03 November 2002","result":"Drawn[40]","testMatch":true,"dateObj":"3-Nov-2002"},{"num":32,"score":241,"against":"Australia","position":"1","inning":"4","venue":"Sydney Cricket Ground, Sydney","date":"04 January 2004","result":"Drawn[41]","testMatch":true,"dateObj":"4-Jan-2004"},{"num":33,"score":194,"against":"Pakistan","position":"1","inning":"1","venue":"Multan Cricket Stadium, Multan","date":"29 March 2004","result":"Won[42]","testMatch":true,"dateObj":"29-Mar-2004"},{"num":34,"score":248,"against":"Bangladesh","position":"1","inning":"1","venue":"Bangabandhu National Stadium, Dhaka","date":"12 December 2004","result":"Won[43]","testMatch":true,"dateObj":"12-Dec-2004"},{"num":35,"score":109,"against":"Sri Lanka","position":"1","inning":"2","venue":"Feroz Shah Kotla, New Delhi","date":"22 December 2005","result":"Won[44]","testMatch":true,"dateObj":"22-Dec-2005"},{"num":36,"score":101,"against":"Bangladesh","position":"1","inning":"1","venue":"Bir Shrestha Shahid Ruhul Amin Stadium, Chittagong","date":"19 May 2007","result":"Drawn[45][46]","testMatch":true,"dateObj":"19-May-2007"},{"num":37,"score":122,"against":"Bangladesh","position":"1","inning":"2","venue":"Sher-e-Bangla National Stadium, Mirpur","date":"26 May 2007","result":"Won[47]","testMatch":true,"dateObj":"26-May-2007"},{"num":38,"score":154,"against":"Australia","position":"1","inning":"2","venue":"Sydney Cricket Ground, Sydney","date":"04 January 2008","result":"Lost[48]","testMatch":true,"dateObj":"4-Jan-2008"},{"num":39,"score":153,"against":"Australia","position":"1","inning":"4","venue":"Adelaide Oval, Adelaide","date":"25 January 2008","result":"Drawn[49][50]","testMatch":true,"dateObj":"25-Jan-2008"},{"num":40,"score":109,"against":"Australia","position":"1","inning":"4","venue":"Vidarbha Cricket Association Stadium, Nagpur","date":"06 November 2008","result":"Won[51]","testMatch":true,"dateObj":"6-Nov-2008"},{"num":41,"score":103,"against":"England","position":"2","inning":"1","venue":"M. A. Chidambaram Stadium, Chennai","date":"15 December 2008","result":"Won[52]","testMatch":true,"dateObj":"15 Dec 2008"},{"num":42,"score":160,"against":"New Zealand","position":"1","inning":"1","venue":"Seddon Park, Hamilton","date":"20 March 2009","result":"Won[53]","testMatch":true,"dateObj":"20-Mar-2009"},{"num":43,"score":100,"against":"Sri Lanka","position":"2","inning":"1","venue":"Sardar Patel Stadium, Ahmedabad","date":"20 November 2009","result":"Drawn[54]","testMatch":true,"dateObj":"20-Nov-2009"},{"num":44,"score":105,"against":"Bangladesh","position":"1","inning":"1","venue":"Zohur Ahmed Chowdhury Stadium, Chittagong","date":"18 January 2010","result":"Won[55][56]","testMatch":true,"dateObj":"18-Jan-2010"},{"num":45,"score":143,"against":"Bangladesh","position":"1","inning":"2","venue":"Sher-e-Bangla National Stadium, Mirpur","date":"25 January 2010","result":"Won[57]","testMatch":true,"dateObj":"25-Jan-2010"},{"num":46,"score":100,"against":"South Africa","position":"2","inning":"1","venue":"Vidarbha Cricket Association Stadium, Nagpur","date":"09 February 2010","result":"Lost[58]","testMatch":true,"dateObj":"9-Feb-2010"},{"num":47,"score":106,"against":"South Africa","position":"1","inning":"2","venue":"Eden Gardens, Kolkata","date":"15 February 2010","result":"Won[59]","testMatch":true,"dateObj":"15-Feb-2010"},{"num":48,"score":203,"against":"Sri Lanka","position":"1","inning":"2","venue":"Sinhalese Sports Club Ground, Colombo","date":"28 July 2010","result":"Drawn[60]","testMatch":true,"dateObj":"28-Jul-2010"},{"num":49,"score":214,"against":"Australia","position":"1","inning":"2","venue":"M. Chinnaswamy Stadium, Bangalore","date":"11 October 2010","result":"Won[61]","testMatch":true,"dateObj":"11-Oct-2010"},{"num":50,"score":111,"against":"South Africa","position":"2","inning":"1","venue":"SuperSport Park, Centurion","date":"19 December 2010","result":"Lost[62]","testMatch":true,"dateObj":"19-Dec-2010"},{"num":51,"score":146,"against":"South Africa","position":"1","inning":"3","venue":"Newlands Cricket Ground, Cape Town","date":"04 January 2011","result":"Drawn[63]","testMatch":true,"dateObj":"4-Jan-2011"}];
+
 // set the dimensions and margins of the graph
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 800 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
+
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 // parse the date / time
 var parseTime = d3.timeParse("%d-%b-%Y");
+
  // display date format
 var  dateFormat = d3.timeFormat("%d %b");
+
 for(var i = 0; i < data.length; i++) {
   data[i].dateAxis = parseTime(data[i].dateObj);
 }
+
 // set the ranges
 var x = d3.scaleTime().range([50, width]);
 var y = d3.scaleLinear().range([height, 50]);
+
 var div = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
+
 var svg = d3.select("#Chart1")
             .append("svg") 
 			 .attr("transform", "translate(0,0)");
+
 svg.append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
+
 // Scale the range of the data
   x.domain(d3.extent(data, function(d) { return d.dateAxis; }));
   y.domain([80, d3.max(data, function(d) { return d.score; })]);
+
 svg.selectAll("circle")
      .data(data)
       .enter()
@@ -427,17 +498,21 @@ svg.selectAll("circle")
          }
          d3.select(this).transition().duration(300).style("stroke", function(d) { if(d.testMatch){return "green";} else{ return "red"}}).attr("r", function(d) {return 6 * d.score/100;}).attr("fill", fillColor);
        });
+
 // Add the X Axis
   svg.append("g")
       .attr("class", "x-axis")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x).ticks(18));
       
+
   // Add the Y Axis
   svg.append("g")
       .attr("class", "y-axis")
       .attr("transform", "translate(50,0)")
       .call(d3.axisLeft(y));
+
+
 // text label for the X axis
   svg.append("text")
       .attr("x", width/2)
@@ -446,6 +521,8 @@ svg.selectAll("circle")
       .style("text-anchor", "middle")
       .attr("fill", "#efefef")
       .text("Year");
+
+
 // text label for the y axis
   svg.append("text")
       .attr("x", 0 - height/2)
@@ -455,6 +532,8 @@ svg.selectAll("circle")
       .style("text-anchor", "middle")
       .attr("fill", "#efefef")
       .text("Score");
+
+
 </script>
 </div>
 <div id="Odi" class="tabcontent">
@@ -473,21 +552,41 @@ svg.selectAll("circle")
 <div id="svw">
 <script>
 function msover(x,y) {
+
+
  document.getElementById("country-statsvsAus").style.display = "none"; 
  document.getElementById("country-statsvsBan").style.display = "none"; 
+
+
  document.getElementById("country-statsvsBer").style.display = "none"; 
+
  document.getElementById("country-statsvsEng").style.display = "none"; 
+
  document.getElementById("country-statsvsIre").style.display = "none"; 
+
  document.getElementById("country-statsvsKey").style.display = "none"; 
+
  document.getElementById("country-statsvsNam").style.display = "none"; 
+
  document.getElementById("country-statsvsNew").style.display = "none"; 
+
+
  document.getElementById("country-statsvsNet").style.display = "none"; 
+
  document.getElementById("country-statsvsPak").style.display = "none"; 
+
  document.getElementById("country-statsvsSou").style.display = "none"; 
+
  document.getElementById("country-statsvsSri").style.display = "none"; 
+
  document.getElementById("country-statsvsUae").style.display = "none"; 
+
  document.getElementById("country-statsvsWes").style.display = "none"; 
+
  document.getElementById("country-statsvsZim").style.display = "none"; 
+
+
+
 if (y=='AUS') {
  document.getElementById("country-statsvsAus").style.display = "block"; 
 } else if (y=='BAN'){
@@ -521,6 +620,7 @@ else if (y=='BER'){
  document.getElementById("country-statsvsZim").style.display = "block"; 
 }
 }
+
 function msout(x,y) {
 /*
 if (y=='AUS') {
@@ -560,100 +660,100 @@ else if (y=='NET'){
 }
 </script>
   <span class="container">
-  <img src="images/arrow.gif"   width="70px" id="v Australia">
+  <img src="Images/arrow.gif"   width="70px" id="v Australia">
   </span>
   <span class="container">
-  <img src="images/Australia.png"  class="rotate" onclick="msover(this,'AUS')" onmouseout="msout(this, 'AUS')"  width="70px" id="v Australia">
+  <img src="Images/Australia.png"  class="rotate" onclick="msover(this,'AUS')" onmouseout="msout(this, 'AUS')"  width="70px" id="v Australia">
   <div class="overlay">
     <div class="text">Australia</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/Bangladesh.png"  class="rotate"  width="70px" onclick="msover(this,'BAN')" onmouseout="msout(this, 'BAN')"  id="v Bangladesh">
+  <img src="Images/Bangladesh.png"  class="rotate"  width="70px" onclick="msover(this,'BAN')" onmouseout="msout(this, 'BAN')"  id="v Bangladesh">
   <div class="overlay">
     <div class="text">Bangladesh</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/Bermuda.png"   class="rotate" width="70px" onclick="msover(this,'BER')" onmouseout="msout(this, 'BER')"  id="v Bermuda">
+  <img src="Images/Bermuda.png"   class="rotate" width="70px" onclick="msover(this,'BER')" onmouseout="msout(this, 'BER')"  id="v Bermuda">
   <div class="overlay">
     <div class="text">Bermuda</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/England.png"   class="rotate" width="70px" onclick="msover(this,'ENG')" onmouseout="msout(this, 'ENG')"  id="v England">
+  <img src="Images/England.png"   class="rotate" width="70px" onclick="msover(this,'ENG')" onmouseout="msout(this, 'ENG')"  id="v England">
   <div class="overlay">
     <div class="text">England</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/Ireland.png"   class="rotate" width="70px" onclick="msover(this,'IRE')" onmouseout="msout(this, 'IRE')"  id="v Ireland">
+  <img src="Images/Ireland.png"   class="rotate" width="70px" onclick="msover(this,'IRE')" onmouseout="msout(this, 'IRE')"  id="v Ireland">
   <div class="overlay">
     <div class="text">Ireland</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/Kenya.png"   class="rotate" width="70px" onclick="msover(this,'KEY')" onmouseout="msout(this, 'KEY')"  id="v Kenya">
+  <img src="Images/Kenya.png"   class="rotate" width="70px" onclick="msover(this,'KEY')" onmouseout="msout(this, 'KEY')"  id="v Kenya">
   <div class="overlay">
     <div class="text">Kenya</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/Namibia.png"  class="rotate"  width="70px" onclick="msover(this,'NAM')" onmouseout="msout(this, 'NAM')"  id="v Namibia">
+  <img src="Images/Namibia.png"  class="rotate"  width="70px" onclick="msover(this,'NAM')" onmouseout="msout(this, 'NAM')"  id="v Namibia">
   <div class="overlay">
     <div class="text">Namibia</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/Netherland.png"   class="rotate" width="70px" onclick="msover(this,'NET')" onmouseout="msout(this, 'NET')"  id="v Netherlands">
+  <img src="Images/Netherland.png"   class="rotate" width="70px" onclick="msover(this,'NET')" onmouseout="msout(this, 'NET')"  id="v Netherlands">
   <div class="overlay">
     <div class="text">Netherlands</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/NewZealand.png"   class="rotate" width="70px" onclick="msover(this,'NEW')" onmouseout="msout(this, 'NEW')" id="v New Zealand">
+  <img src="Images/NewZealand.png"   class="rotate" width="70px" onclick="msover(this,'NEW')" onmouseout="msout(this, 'NEW')" id="v New Zealand">
   <div class="overlay">
     <div class="text">NewZealand</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/Pakistan.png"   class="rotate" width="70px" onclick="msover(this,'PAK')" onmouseout="msout(this, 'PAK')"  id="v Pakistan">
+  <img src="Images/Pakistan.png"   class="rotate" width="70px" onclick="msover(this,'PAK')" onmouseout="msout(this, 'PAK')"  id="v Pakistan">
   <div class="overlay">
     <div class="text">Pakistan</div>
   </div>
   </span>
   <span class="container">
-  <img src="images/southafrica.png"   class="rotate" width="70px" onclick="msover(this,'SOU')" onmouseout="msout(this, 'SOU')"  id="v South Africa">
+  <img src="Images/southafrica.png"   class="rotate" width="70px" onclick="msover(this,'SOU')" onmouseout="msout(this, 'SOU')"  id="v South Africa">
 <div class="overlay">
     <div class="text">SouthAfrica</div>
   </div> 
  </span>
  <span class="container">
-  <img src="images/Srilanka.png"   class="rotate" width="70px" onclick="msover(this,'SRI')" onmouseout="msout(this, 'SRI')"  id="v Sri Lanka">
+  <img src="Images/Srilanka.png"   class="rotate" width="70px" onclick="msover(this,'SRI')" onmouseout="msout(this, 'SRI')"  id="v Sri Lanka">
 <div class="overlay">
     <div class="text">Srilanka</div>
   </div> 
  </span>
  <span class="container">
-  <img src="images/UAE.png"   class="rotate" width="70px" onclick="msover(this,'UAE')" onmouseout="msout(this, 'UAE')"  id="v U.A.E.">
+  <img src="Images/UAE.png"   class="rotate" width="70px" onclick="msover(this,'UAE')" onmouseout="msout(this, 'UAE')"  id="v U.A.E.">
 <div class="overlay">
     <div class="text">United Arab Emirate</div>
   </div> 
  </span>
  <span class="container">
-  <img src="images/westindies.png"   class="rotate" width="70px" onclick="msover(this,'WES')" onmouseout="msout(this, 'WES')"  id="v West Indies">
+  <img src="Images/westindies.png"   class="rotate" width="70px" onclick="msover(this,'WES')" onmouseout="msout(this, 'WES')"  id="v West Indies">
 <div class="overlay">
     <div class="text">Westindies</div>
   </div> 
  </span>
  <span class="container">
-  <img src="images/zimbabwe.png"   class="rotate"  width="70px" onclick="msover(this,'ZIM')" onmouseout="msout(this, 'ZIM')"  id="v Zimbabwe">
+  <img src="Images/zimbabwe.png"   class="rotate"  width="70px" onclick="msover(this,'ZIM')" onmouseout="msout(this, 'ZIM')"  id="v Zimbabwe">
 <div class="overlay">
     <div class="text">Zimbabwe</div>
   </div> 
  </span>
    <span class="container">
-  <img src="images/end.png"   width="70px" id="v Australia">
+  <img src="Images/end.png"   width="70px" id="v Australia">
 
   </span>
  </div>  
@@ -1617,7 +1717,7 @@ Today, it is a popular sport in England, Australia, India, Pakistan, Sri Lanka, 
 <script>
 function mouseUp(d,i) {
 console.log("mouseup");
-               /*   var runs = 0;
+                 var runs = 0;
 					var yearfrom="1989";
 					var yearTo="";
 					
@@ -1633,13 +1733,34 @@ console.log("mouseup");
          .duration(200)
          .style("opacity", .6);
        div.html(htmlStr)
-         .style("left", (d3.event.pageX + 28) + "px")
-         .style("top", (d3.event.pageY - 50) + "px");  */
+         .style("left", (d3.event.pageX + 40) + "px")
+         .style("top", (d3.event.pageY - 50) + "px");  
 };
-function mouseout(d,i) {
-    console.log("mouseout");
+
+function mouseouttest(d,i) {
+console.log(d);
+       var fillColor = "";
+       div.transition()
+         .duration(500)
+         .style("opacity", 0);
+            fillColor = "#7CFC00";  // green
+         
+         d3.select(this).transition().duration(300).style("stroke", function(d) { if(d.testMatch){return "green";} else{ return "yellow"}})
+		 .attr("r", function(d) {return 6 * d.score/100;}).attr("fill", fillColor);
 };		  
-   
+ 
+function mouseoutodi(d,i) {
+console.log(d);
+       var fillColor = "";
+       div.transition()
+         .duration(500)
+         .style("opacity", 0);
+        
+           fillColor = "#B22222";  // red
+         d3.select(this).transition().duration(300).style("stroke", function(d) { if(d.testMatch){return "green";} else{ return "yellow"}})
+		 .attr("r", function(d) {return 6 * d.score/100;}).attr("fill", fillColor);
+};	 
+
 ////////////////////////// begin waterfall graph
           var label_width = 200;
           var plot_width  = 600;
@@ -1656,6 +1777,7 @@ function mouseout(d,i) {
 		  for(var i = 0; i < data_points.length; i++) {
               total_time += data_points[i].value;
           }
+
           width_per_sec = plot_width / total_time;
           
           function get_x(data, index) {
@@ -1671,6 +1793,7 @@ function mouseout(d,i) {
 			
               return x;
           }
+
           function get_cumulative_runs(index) {
               var runs = 0;
               for (var j = 0; j <= index; j++) {
@@ -1684,6 +1807,7 @@ function mouseout(d,i) {
           .attr("width", max_width)
           .attr("height", max_height + 10).attr("transform", "translate(-100,0)")
 		  ;
+
           //y axis line built here
           svg.append("line")
           .attr("x1", label_width - 0.5)
@@ -1701,6 +1825,7 @@ function mouseout(d,i) {
           .attr("y2", function() { return data_points.length * bar_height - 0.5 + 10})
           .attr("stroke", "white");
 		  
+
                
           //the y-axis labels
           svg.selectAll("label")
@@ -1734,7 +1859,7 @@ function mouseout(d,i) {
           .attr("value", function(d) { return d.value; })
 			.on("mouseover", mouseUp)
 		  .on("click", mouseUp)
-          .on("mouseout", mouseout)
+          .on("mouseout", mouseoutodi)
 		  ;
                   
           svg.selectAll("waterfall")
@@ -1748,6 +1873,7 @@ function mouseout(d,i) {
           //.attr("stroke", "white")
           .attr("stroke-width", 1)
           .attr("opacity", 1)
+
           //the bar labels
           svg.selectAll("label")
           .data(data_points)
@@ -1757,11 +1883,13 @@ function mouseout(d,i) {
           .attr("y", function(d, i) { return (i * bar_height) + bar_height + 10 })
           .attr("dy", -10)
           .attr("class", "small")
-		  .attr("fill", "white")
-.on("mouseover", mouseUp)		  
+		  .attr("fill", "white");		  
 		 
 		 
 ///////////////////////// end ODI waterfall
+
+
+
 ////////////////////////// begin Test waterfall graph
           var label_width = 200;
           var plot_width  = 600;
@@ -1778,6 +1906,7 @@ function mouseout(d,i) {
 		  for(var i = 0; i < data_points.length; i++) {
               total_time += data_points[i].value;
           }
+
           width_per_sec = plot_width / total_time;
           
           function get_x(data, index) {
@@ -1792,6 +1921,7 @@ function mouseout(d,i) {
               }
               return x;
           }
+
           function get_cumulative_runs(index) {
               var runs = 0;
               for (var j = 0; j <= index; j++) {
@@ -1799,6 +1929,7 @@ function mouseout(d,i) {
               }
               return runs;
           }
+
 ////
           		  
 		   var svg = d3.select("#viz1")
@@ -1807,6 +1938,9 @@ function mouseout(d,i) {
 		  .attr("height", max_height)
          .attr("height", max_height + 10).attr("transform", "translate(-100,0)")
 		  ;
+
+
+
           //y axis line built here
 		  
           svg.append("line")
@@ -1825,6 +1959,7 @@ function mouseout(d,i) {
           .attr("y2", function() { return data_points.length * bar_height - 0.5 + 10})
           .attr("stroke", "white");
 		  
+
                
           //the y-axis labels
           svg.selectAll("label")
@@ -1858,17 +1993,9 @@ function mouseout(d,i) {
           .attr("class", "bar")
 		 // .attr("stroke", "red")
           .attr("value", function(d) { return d.value; })	   
-        /*  .on("mouseout", function(d) {
-              //undo underline and bold
-              //svg.select("#l_" + d.label).style("text-decoration", "none").style("font-weight", "normal");
-              //hide the guide
-              svg.select("#g_" + d.label).style("display", "none");
-          }) */
-         /* .on("click", function(d) {
-            //  var url = base_url + d.label;
-			updateBars(d.label);
-           //   window.open(url);
-          })  */
+          .on("mouseover", mouseUp)
+		  .on("click", mouseUp)
+          .on("mouseout", mouseouttest)
 		  ;
                   
           svg.selectAll("waterfall")
@@ -1882,6 +2009,7 @@ function mouseout(d,i) {
         //  .attr("stroke", "white")
           .attr("stroke-width", 1)
           .attr("opacity", 1)
+
           //the bar labels
           svg.selectAll("label")
           .data(data_points)
@@ -1895,10 +2023,14 @@ function mouseout(d,i) {
 		 
 		  
 ///////////////////////// end ODI waterfall
+
+
+
+
 </script>
 
 <div id="careertable"> 
-<div style="left: 0; margin-left: 0px; min-height: 100%; position: relative; top: 23px;"> 
+
 <table width="100%" border="0" cellpadding="0" cellspacing="0" height="100%">
   <tr>
 		<td>	
@@ -2214,6 +2346,7 @@ function mouseout(d,i) {
 												92.17
 											</td>
 										</tr>
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>
@@ -2246,6 +2379,7 @@ function mouseout(d,i) {
 												3
 											</td>
 										</tr>
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>
@@ -2302,6 +2436,7 @@ function mouseout(d,i) {
 												0
 											</td>
 										</tr>
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>							
@@ -2513,6 +2648,7 @@ function mouseout(d,i) {
 												52.30
 											</td>
 										</tr>
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>
@@ -2540,6 +2676,7 @@ function mouseout(d,i) {
 										<tr>
 											<td>&nbsp;</td><td>&nbsp;</td>
 										</tr>										
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>
@@ -2585,6 +2722,7 @@ function mouseout(d,i) {
 										<tr>
 											<td>&nbsp;</td><td>&nbsp;</td>
 										</tr>										
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>							
@@ -2796,6 +2934,7 @@ function mouseout(d,i) {
 												15.00
 											</td>
 										</tr>
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>
@@ -2823,6 +2962,7 @@ function mouseout(d,i) {
 										<tr>
 											<td>&nbsp;</td><td>&nbsp;</td>
 										</tr>										
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>
@@ -3071,6 +3211,7 @@ function mouseout(d,i) {
 												N/A
 											</td>
 										</tr>
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>
@@ -3098,6 +3239,7 @@ function mouseout(d,i) {
 										<tr>
 											<td>&nbsp;</td><td>&nbsp;</td>
 										</tr>										
+
 										<tr>
 											<td colspan="2">&nbsp;</td>
 										</tr>
@@ -3166,16 +3308,22 @@ function mouseout(d,i) {
           </td>
         </tr>
   </table>      
-</div> 
+
+
+
 </div></div>
+
 <div id="Ipl" class="tabcontent">
  <p>IPL Select the year from the dropdown to view Run scored against countries in both the format of games i.e. ODI and test matches</p>
 <div id="Ipl1"> 
 <script>
+
 console.log('inside ipl');
 </script>
 </div>
 </div>
+
+
 <script>
 function openPage(pageName,elmnt,color) {
 console.log(pageName);
@@ -3191,9 +3339,10 @@ console.log(pageName);
   document.getElementById(pageName).style.display = "block";
   elmnt.style.backgroundColor = color;
 }
+
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
 </script>
    
 </body>
-</html>
+</html> 
