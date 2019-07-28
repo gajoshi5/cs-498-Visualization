@@ -1,2 +1,3199 @@
+<meta charset="utf-8"/>
+<!DOCTYPE html>
 <html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.rotate {
+  animation: rotation 8s infinite linear;
+}
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+div.showhim1 {
+    display: none;
+    border:1px solid #000;
+    height:30px;
+    width:290px;
+    margin-left:10px;
+}
+			
+* {box-sizing: border-box}
+/* Set height of body and the document to 100% */
+body,html {
+  background-color: black;
+  font-family: 'Roboto', sans-serif;
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+/* Style tab links */
+.tablink {
+  background-color: #555;
+  color: white;
+  float: left;
+   border: 1px solid white;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 25%;
+}
+<!--
+.buttonabout {
+  background-color: black;
+  color: blue;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 18px;
+}-->
+/*
+.tablink:hover {
+  background-color: #777;
+}*/
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+  color: white;
+  display: none;
+  padding: 100px 20px;
+  height: 100%;
+}
+#About {background-color: black;}
+#Odi {background-color: black;}
+#Test {background-color: black;}
+table {
+background-color: black;
+} 
+ th, td {
+border: 2px black solid;
+color: white;
+}
+.rect {
+            border: solid 1px #ccc;
+            font: 10px sans-serif;
+            shape-rendering: crispEdges;
+        }
+.tick line,
+.tick text{
+  stroke: #fff;
+}
+.tick text {
+  color: #fff;
+}
+.x-axis path,
+.y-axis path {
+  stroke: #fff;
+   .small { font-size: 10px; font-family: arial; }
+          .bar { cursor: pointer;}
+}
+#viz { 
+                float:left;  
+                width:750px; 
+                height:600px; 
+            }             
+#viz1{ 
+                float:right; 
+                width:750px; 
+                height:600px; 
+            } 
+#vis-container { 
+                float:left;  
+                width:750px; 
+                height:600px; 
+            }             
+#vis-container1{ 
+                float:right; 
+                width:750px; 
+                height:600px; 
+            }
+ select {
+            display: block;
+        }
+        .barodi {
+            fill: Red;
+            opacity: 0.8;
+        }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+		.axisWhite text{
+  fill: white;
+}
+     .selected {
+          font-weight: bold;
+     }
+          h1,h5 {
+              font-weight:normal;
+              font-family:verdana;
+              text-align:center;
+              color:#666;
+              padding:0px;
+              margin-top:0px;
+              margin-bottom:5px;
+              line-height:100%;
+          }
+		
+          .small { font-size: 10px; font-family: arial; }
+          .bar { cursor: pointer}
+#chart {
+  width: 800px;
+  height: 500px;
+  margin: auto;
+}
+#chart1 {
+  width: 800px;
+  height: 500px;
+  margin: auto;
+}
+#legend {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.inline {
+  display: inline-block;
+  vertical-align: top;
+  margin: 5px;
+  color: #999;
+}
+#legend div.test,
+#legend div.odi{
+  width: 15px;
+  height: 15px;
+}
+#legend div.test {
+  background-color: #2ca02c;
+}
+#legend div.odi {
+  background-color: #dc3912;
+}
+.rect {
+            border: solid 1px #ccc;
+            font: 10px sans-serif;
+            shape-rendering: crispEdges;
+        }
+          .small { font-size: 10px; font-family: arial; }
+          .bar { cursor: pointer}
+circle {
+  stroke: #ccc;
+}
+circle:hover {
+  cursor: pointer;
+}
+div.tooltip {
+  color: #fff;
+  position: absolute;
+  text-align: center;
+  min-width: 80px;
+  width: 120px;
+  min-height: 50px;
+  height: auto;
+  padding: 5px;
+  font: 12px sans-serif;
+  background: #000;
+  border: 1px #fff solid;
+  border-radius: 6px;
+  pointer-events: none;
+}
+.container {
+  position: relative;
+  width: 50%;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+}
+.container:hover .overlay {
+  opacity: 1;
+}
+#one {
+  position: absolute;
+  border: 1px #333 solid;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  margin: auto;
+}		
+</style>
+</head>
+<body>
+
+<button class="tablink" onclick="openPage('About', this, 'black')" id="defaultOpen" >Sachin tendulkar</button>
+<button class="tablink" onclick="openPage('Odi', this, 'black')" ><h>Sachin vs The World</h></button>
+<button class="tablink" onclick="openPage('Test', this, 'black')"><h>Yearly Run Scored</h></button>
+  <script src='https://d3js.org/d3.v5.js' charset='utf-8'></script>
+	<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+<div id="Test" class="tabcontent">
+
+<h3></h3>
+  <p>Select the year from the dropdown to view Run scored against countries in both the format of games i.e. ODI and test matches</p>
+
+<select id="year"></select>
+
+<svg id="chart" width="850" height="400"></svg>
+<svg id="chart1" width="850" height="400"></svg>
+
+<script>
+d3.csv("stackedbar.csv").then(d => chart(d))
+function chart(csv) {
+	var keys = csv.columns.slice(2);
+	var year   = [...new Set(csv.map(d => d.Year))]
+	var states = [...new Set(csv.map(d => d.State))]
+	var options = d3.select("#year").selectAll("option")
+		.data(year)
+	.enter().append("option")
+		.text(d => d)
+	var svg = d3.select("#chart"),
+		margin = {top: 35, left: 35, bottom: 0, right: 0},
+		width = +svg.attr("width") - margin.left - margin.right,
+		height = +svg.attr("height") - margin.top - margin.bottom;
+	var x = d3.scaleBand()
+		.range([margin.left, width - margin.right])
+		.padding(0.1)
+	var y = d3.scaleLinear()
+		.rangeRound([height - margin.bottom, margin.top])
+	var xAxis = svg.append("g")
+		.attr("transform", `translate(0,${height - margin.bottom})`)
+		.attr("class", "x-axis")
+		
+	var yAxis = svg.append("g")
+		.attr("transform", `translate(${margin.left},0)`)
+		.attr("class", "y-axis")
+	var z = d3.scaleOrdinal()
+		.range(["red", "green"])
+		.domain(keys);
+	update(d3.select("#year").property("value"), 0)
+	function update(input, speed) {
+		var data = csv.filter(f => f.Year == input)
+		data.forEach(function(d) {
+			d.total = d3.sum(keys, k => +d[k])
+			return d
+		})
+		y.domain([0, d3.max(data, d => d3.sum(keys, k => +d[k]))]).nice();
+		svg.selectAll(".y-axis").transition().duration(speed)
+			.call(d3.axisLeft(y).ticks(null, "s"))
+		x.domain(data.map(d => d.State));
+		svg.selectAll(".x-axis").transition().duration(speed)
+			.call(d3.axisBottom(x).tickSizeOuter(0))
+		var group = svg.selectAll("g.layer")
+			.data(d3.stack().keys(keys)(data), d => d.key)
+		group.exit().remove()
+		group.enter().append("g")
+			.classed("layer", true)
+			.attr("fill", d => z(d.key));
+		var bars = svg.selectAll("g.layer").selectAll("rect")
+			.data(d => d, e => e.data.State);
+		bars.exit().remove()
+		bars.enter().append("rect")
+			.attr("width", x.bandwidth())
+			.merge(bars)
+		.transition().duration(speed)
+			.attr("x", d => x(d.data.State))
+			.attr("y", d => y(d[1]))
+			.attr("height", d => y(d[0]) - y(d[1]));
+  
+		var text = svg.selectAll(".text")
+			.data(data, d => d.State)
+   ;
+		text.exit().remove()
+		text.enter().append("text")
+			.attr("class", "text")
+			.attr("fill","white")
+			.attr("text-anchor", "middle")		
+			.merge(text)
+		.transition().duration(speed)
+			.attr("x", d => x(d.State) + x.bandwidth() / 2)
+			.attr("y", d => y(d.total) - 5)
+			.text(d => d.total);
+			
+var legend = svg.append('g')
+                .attr('class', 'legend')
+                .attr('transform', 'translate(' + (700) + ', 0)');
+            legend.selectAll('rect')
+                .data(keys)
+                .enter()
+                .append('rect')
+                .attr('x', 0)
+                .attr('y', function(d, i){
+                    return (i+1) * 18;
+                })
+                .attr('width', 10)
+                .attr('height', 12)
+                .attr('fill', function(d, i){
+                    return z(i);
+                });
+            
+            legend.selectAll('text')
+                .data(keys)
+                .enter()
+                .append('text')
+				.attr("fill","white")
+                .text(function(d){
+                    return d;
+                })
+                .attr('x', 18)
+                .attr('y', function(d, i){
+                    return (i+.8) * 30;
+                })
+                .attr('text-anchor', 'start')
+                .attr('alignment-baseline', 'hanging');			
+			
+	}
+	var select = d3.select("#year")
+		.on("change", function() {
+			update(this.value, 750)
+		})
+};
+///// scatterplot
+var data = [{"num":1,"score":110,"against":"Australia","position":"2","inning":"1","strikeRate":"84.61","venue":" R. Premadasa Stadium, Colombo","date":"09 Sep 1994","result":"Won[64]","dateObj":"9-Sep-1994"},{"num":2,"score":115,"against":"New Zealand","position":"2","inning":"2","strikeRate":"84.55","venue":"IPCL Sports Complex Ground, Vadodara","date":"28 October 1994","result":"Won[65]","dateObj":"28-Oct-1994"},{"num":3,"score":105,"against":"West Indies","position":"2","inning":"1","strikeRate":"78.35","venue":"Sawai Mansingh Stadium, Jaipur","date":"11 November 1994","result":"Won[66]","dateObj":"11-Nov-1994"},{"num":4,"score":112,"against":"Sri Lanka","position":"2","inning":"2","strikeRate":"104.67","venue":" Sharjah Cricket Association Stadium, Sharjah","date":"09 April 1995","result":"Won[67]","dateObj":"9-Apr-1995"},{"num":5,"score":127,"against":"Kenya","position":"2","inning":"2","strikeRate":"92.02","venue":"Barabati Stadium, Cuttack","date":"18 February 1996","result":"Won[68]","dateObj":"18-Feb-1996"},{"num":6,"score":137,"against":"Sri Lanka","position":"2","inning":"1","strikeRate":"100.00","venue":"Feroz Shah Kotla, New Delhi","date":"02 March 1996","result":"Lost[69]","dateObj":"2-Mar-1996"},{"num":7,"score":100,"against":"Pakistan","position":"2","inning":"1","strikeRate":"90.09","venue":"Padang, Singapore","date":"05 April 1996","result":"Lost[70]","dateObj":"5-Apr-1996"},{"num":8,"score":118,"against":"Pakistan","position":"2","inning":"1","strikeRate":"84.28","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"15 April 1996","result":"Won[71]","dateObj":"15-Apr-1996"},{"num":9,"score":110,"against":"Sri Lanka","position":"2","inning":"1","strikeRate":"79.71","venue":"R. Premadasa Stadium, Colombo","date":"28 August 1996","result":"Lost[72]","dateObj":"28-Aug-1996"},{"num":10,"score":114,"against":"South Africa","position":"1","inning":"1","strikeRate":"90.47","venue":"Wankhede Stadium, Mumbai","date":"14 December 1996","result":"Won[73]","dateObj":"14-Dec-1996"},{"num":11,"score":104,"against":"Zimbabwe","position":"1","inning":"1","strikeRate":"107.21","venue":"Willowmoore Park, Benoni","date":"09 February 1997","result":"Won[74]","dateObj":"9-Feb-1997"},{"num":12,"score":117,"against":"New Zealand","position":"2","inning":"2","strikeRate":"85.40","venue":"M. Chinnaswamy Stadium, Bangalore","date":"14 May 1997","result":"Won[75]","dateObj":"14-May-1997"},{"num":13,"score":100,"against":"Australia","position":"2","inning":"2","strikeRate":"112.35","venue":"Green Park Stadium, Kanpur","date":"07 April 1998","result":"Won[76]","dateObj":"7-Apr-1998"},{"num":14,"score":143,"against":"Australia","position":"2","inning":"2","strikeRate":"109.16","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"22 April 1998","result":"Lost[77]","dateObj":"22-Apr-1998"},{"num":15,"score":134,"against":"Australia","position":"2","inning":"2","strikeRate":"102.29","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"24 April 1998","result":"Won[78]","dateObj":"24-Apr-1998"},{"num":16,"score":100,"against":"Kenya","position":"2","inning":"2","strikeRate":"97.08","venue":"Eden Gardens, Kolkata","date":"31 May 1998","result":"Won[79]","dateObj":"31-May-1998"},{"num":17,"score":128,"against":"Sri Lanka","position":"2","inning":"1","strikeRate":"97.70","venue":"R. Premadasa Stadium, Colombo","date":"07 July 1998","result":"Won[80]","dateObj":"7-Jul-1998"},{"num":18,"score":127,"against":"Zimbabwe","position":"2","inning":"2","strikeRate":"97.69","venue":"Queens Sports Club, Bulawayo","date":"26 September 1998","result":"Won[81]","dateObj":"26-Sep-1998"},{"num":19,"score":141,"against":"Australia","position":"2","inning":"1","strikeRate":"110.15","venue":"Bangabandhu Stadium, Dhaka","date":"28 October 1998","result":"Won[82]","dateObj":"28-Oct-1998"},{"num":20,"score":118,"against":"Zimbabwe","position":"2","inning":"2","strikeRate":"105.35","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"08 November 1998","result":"Won[83]","dateObj":"8-Nov-1998"},{"num":21,"score":124,"against":"Zimbabwe","position":"2","inning":"2","strikeRate":"134.78","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"13 November 1998","result":"Won[84]","dateObj":"13-Nov-1998"},{"num":22,"score":140,"against":"Kenya","position":"4","inning":"1","strikeRate":"138.61","venue":"County Ground, Bristol","date":"23 May 1999","result":"Won[85]","dateObj":"23-May-1999"},{"num":23,"score":120,"against":"Sri Lanka","position":"1","inning":"1","strikeRate":"85.10","venue":"Sinhalese Sports Club Ground, Colombo","date":"29 August 1999","result":"Won[86]","dateObj":"29-Aug-1999"},{"num":24,"score":186,"against":"New Zealand","position":"2","inning":"1","strikeRate":"124.00","venue":"Lal Bahadur Shastri Stadium, Hyderabad","date":"08 November 1999","result":"Won[87]","dateObj":"8-Nov-1999"},{"num":25,"score":122,"against":"South Africa","position":"2","inning":"2","strikeRate":"88.40","venue":"IPCL Sports Complex Ground, Vadodara","date":"17 March 2000","result":"Won[88]","dateObj":"17-Mar-2000"},{"num":26,"score":101,"against":"Sri Lanka","position":"2","inning":"1","strikeRate":"72.14","venue":"Sharjah Cricket Association Stadium, Sharjah","date":"20 October 2000","result":"Lost[89]","dateObj":"20-Oct-2000"},{"num":27,"score":146,"against":"Zimbabwe","position":"2","inning":"1","strikeRate":"95.42","venue":"Barkatullah Khan Stadium, Jodhpur","date":"08 December 2000","result":"Lost[90]","dateObj":"8-Dec-2000"},{"num":28,"score":139,"against":"Australia","position":"2","inning":"1","strikeRate":"111.20","venue":"Nehru Stadium, Indore","date":"31 March 2001","result":"Won[91]","dateObj":"31-Mar-2001"},{"num":29,"score":122,"against":"West Indies","position":"2","inning":"2","strikeRate":"93.12","venue":"Harare Sports Club, Harare","date":"04 July 2001","result":"Won[92]","dateObj":"4-Jul-2001"},{"num":30,"score":101,"against":"South Africa","position":"2","inning":"1","strikeRate":"78.29","venue":"New Wanderers Stadium, Johannesburg","date":"05 October 2001","result":"Lost[93]","dateObj":"5-Oct-2001"},{"num":31,"score":146,"against":"Kenya","position":"2","inning":"1","strikeRate":"110.60","venue":"Boland Park, Paarl","date":"24 October 2001","result":"Won[94]","dateObj":"24-Oct-2001"},{"num":32,"score":105,"against":"England","position":"4","inning":"1","strikeRate":"97.22","venue":"Riverside Ground, Chester-le-Street","date":"04 July 2002","result":"N/R[95]","dateObj":"4-Jul-2002"},{"num":33,"score":113,"against":"Sri Lanka","position":"4","inning":"1","strikeRate":"110.78","venue":"County Ground, Bristol","date":"11 July 2002","result":"Won[96]","dateObj":"11-Jul-2002"},{"num":34,"score":152,"against":"Namibia","position":"2","inning":"1","strikeRate":"100.66","venue":"City Oval, Pietermaritzburg","date":"23 February 2003","result":"Won[97]","dateObj":"23-Feb-2003"},{"num":35,"score":100,"against":"Australia","position":"2","inning":"1","strikeRate":"84.03","venue":"Roop Singh Stadium, Gwalior","date":"26 October 2003","result":"Won[98]","dateObj":"26-Oct-2003"},{"num":36,"score":102,"against":"New Zealand","position":"2","inning":"1","strikeRate":"112.08","venue":"Lal Bahadur Shastri Stadium, Hyderabad","date":"15 November 2003","result":"Won[99]","dateObj":"15-Nov-2003"},{"num":37,"score":141,"against":"Pakistan","position":"2","inning":"2","strikeRate":"104.44","venue":"Rawalpindi Cricket Stadium, Rawalpindi","date":"16 March 2004","result":"Lost[100]","dateObj":"16-Mar-2004"},{"num":38,"score":123,"against":"Pakistan","position":"2","inning":"1","strikeRate":"94.61","venue":"Sardar Patel Stadium, Motera, Ahmedabad","date":"12 April 2005","result":"Lost[101]","dateObj":"12-Apr-2005"},{"num":39,"score":100,"against":"Pakistan","position":"2","inning":"1","strikeRate":"88.49","venue":"Arbab Niaz Stadium, Peshawar","date":"06 February 2006","result":"Lost[102]","dateObj":"6-Feb-2006"},{"num":40,"score":141,"against":"West Indies","position":"2","inning":"1","strikeRate":"95.27","venue":"Kinrara Academy Oval, Kuala Lumpur","date":"14 September 2006","result":"Lost[103]","dateObj":"14 Sep 2006"},{"num":41,"score":100,"against":"West Indies","position":"4","inning":"1","strikeRate":"131.57","venue":"IPCL Sports Complex Ground, Vadodara","date":"31 January 2007","result":"Won[104]","dateObj":"31-Jan-2007"},{"num":42,"score":117,"against":"Australia","position":"1","inning":"2","strikeRate":"97.5","venue":"Sydney Cricket Ground, Sydney","date":"02 March 2008","result":"Won[105]","dateObj":"2-Mar-2008"},{"num":43,"score":163,"against":"New Zealand","position":"2","inning":"1","strikeRate":"122.55","venue":"AMI Stadium, Christchurch","date":"08 March 2009","result":"Won[106]","dateObj":"8-Mar-2009"},{"num":44,"score":138,"against":"Sri Lanka","position":"1","inning":"1","strikeRate":"103.76","venue":"R. Premadasa Stadium, Colombo","date":"14 September 2009","result":"Won[107]","dateObj":"14-Sep-2009"},{"num":45,"score":175,"against":"Australia","position":"2","inning":"2","strikeRate":"124.11","venue":"Rajiv Gandhi International Stadium, Hyderabad","date":"05 November 2009","result":"Lost[108]","dateObj":"5-Nov-2009"},{"num":46,"score":200,"against":"South Africa","position":"2","inning":"1","strikeRate":"136.05","venue":"Roop Singh Stadium, Gwalior","date":"24 February 2010","result":"Won[109]","dateObj":"24-Feb-2010"},{"num":47,"score":120,"against":"England","position":"2","inning":"1","strikeRate":"104.35","venue":"M. Chinnaswamy Stadium, Bangalore","date":"27 February 2011","result":"Tied[110]","dateObj":"27-Feb-2011"},{"num":48,"score":111,"against":"South Africa","position":"2","inning":"1","strikeRate":"109.90","venue":"VCA Stadium, Nagpur","date":"12 March 2011","result":"Lost[111]","dateObj":"12-Mar-2011"},{"num":49,"score":114,"against":"Bangladesh","position":"2","inning":"1","strikeRate":"77.55","venue":"Sher-e-Bangla National Stadium, Mirpur","date":"16 March 2012","result":"Lost[112]","dateObj":"16-Mar-2012"},{"num":1,"score":119,"against":"England","position":"2","inning":"2","venue":"Old Trafford, Manchester","date":"14 August 1990","result":"Drawn[10]","testMatch":true,"dateObj":"14-Aug-1990"},{"num":2,"score":148,"against":"Australia","position":"1","inning":"3","venue":"Sydney Cricket Ground, Sydney","date":"06 January 1992","result":"Drawn[11]","testMatch":true,"dateObj":"6-Jan-1992"},{"num":3,"score":114,"against":"Australia","position":"1","inning":"5","venue":" WACA Ground, Perth","date":"03 February 1992","result":"Lost[12]","testMatch":true,"dateObj":"3-Feb-1992"},{"num":4,"score":111,"against":"South Africa","position":"1","inning":"2","venue":"Wanderers Stadium, Johannesburg","date":"28 November 1992","result":"Drawn[13]","testMatch":true,"dateObj":"28-Nov-1992"},{"num":5,"score":165,"against":"England","position":"1","inning":"2","venue":"M. A. Chidambaram Stadium, Chennai","date":"12 February 1993","result":"Won[14]","testMatch":true,"dateObj":"12-Feb-1993"},{"num":6,"score":104,"against":"Sri Lanka","position":"2","inning":"2","venue":"Sinhalese Sports Club Ground, Colombo","date":"31 July 1993","result":"Won[15]","testMatch":true,"dateObj":"31-Jul-1993"},{"num":7,"score":142,"against":"Sri Lanka","position":"1","inning":"1","venue":"K. D. Singh Babu Stadium, Lucknow","date":"19 January 1994","result":"Won[16]","testMatch":true,"dateObj":"19-Jan-1994"},{"num":8,"score":179,"against":"West Indies","position":"1","inning":"2","venue":"Vidarbha Cricket Association Ground, Nagpur","date":"02 December 1994","result":"Drawn[17]","testMatch":true,"dateObj":"2-Dec-1994"},{"num":9,"score":122,"against":"England","position":"2","inning":"1","venue":"Edgbaston, Birmingham","date":"08 June 1996","result":"Lost[18]","testMatch":true,"dateObj":"8-Jun-1996"},{"num":10,"score":177,"against":"England","position":"1","inning":"3","venue":" Trent Bridge, Nottingham","date":"05 July 1996","result":"Drawn[19]","testMatch":true,"dateObj":"5-Jul-1996"},{"num":11,"score":169,"against":"South Africa","position":"1","inning":"2","venue":"Newlands Cricket Ground, Cape Town","date":"04 January 1997","result":"Lost[20]","testMatch":true,"dateObj":"4-Jan-1997"},{"num":12,"score":143,"against":"Sri Lanka","position":"1","inning":"1","venue":"R. Premadasa Stadium, Colombo","date":"03 August 1997","result":"Drawn[21]","testMatch":true,"dateObj":"3-Aug-1997"},{"num":13,"score":139,"against":"Sri Lanka","position":"1","inning":"2","venue":"Sinhalese Sports Club Ground, Colombo","date":"11 August 1997","result":"Drawn;[22]","testMatch":true,"dateObj":"11-Aug-1997"},{"num":14,"score":148,"against":"Sri Lanka","position":"1","inning":"3","venue":"Wankhede Stadium, Mumbai","date":"04 December 1997","result":"Drawn[23]","testMatch":true,"dateObj":"4-Dec-1997"},{"num":15,"score":155,"against":"Australia","position":"2","inning":"1","venue":"M. A. Chidambaram Stadium, Chennai","date":"09 March 1998","result":"Won[24]","testMatch":true,"dateObj":"9-Mar-1998"},{"num":16,"score":177,"against":"Australia","position":"1","inning":"3","venue":"M. Chinnaswamy Stadium, Bangalore","date":"26 March 1998","result":"Lost[25]","testMatch":true,"dateObj":"26-Mar-1998"},{"num":17,"score":113,"against":"New Zealand","position":"2","inning":"2","venue":"Basin Reserve, Wellington","date":"29 December 1998","result":"Lost[26]","testMatch":true,"dateObj":"29-Dec-1998"},{"num":18,"score":136,"against":"Pakistan","position":"2","inning":"1","venue":"M. A. Chidambaram Stadium, Chennai","date":"31 January 1999","result":"Lost[27]","testMatch":true,"dateObj":"31-Jan-1999"},{"num":19,"score":124,"against":"Sri Lanka","position":"2","inning":"2","venue":"Sinhalese Sports Club Ground, Colombo","date":"28 February 1999","result":"Drawn[28]","testMatch":true,"dateObj":"28-Feb-1999"},{"num":20,"score":126,"against":"New Zealand","position":"2","inning":"1","venue":"Punjab Cricket Association Stadium, Mohali","date":"13 October 1999","result":"Drawn[29]","testMatch":true,"dateObj":"13-Oct-1999"},{"num":21,"score":217,"against":"New Zealand","position":"1","inning":"3","venue":"Sardar Patel Stadium, Motera, Ahmedabad","date":"30 October 1999","result":"Drawn[30]","testMatch":true,"dateObj":"30-Oct-1999"},{"num":22,"score":116,"against":"Australia","position":"1","inning":"2","venue":"Melbourne Cricket Ground, Melbourne","date":"28 December 1999","result":"Lost[31]","testMatch":true,"dateObj":"28-Dec-1999"},{"num":23,"score":122,"against":"Zimbabwe","position":"1","inning":"1","venue":"Feroz Shah Kotla, New Delhi","date":"21 November 2000","result":"Won[32]","testMatch":true,"dateObj":"21-Nov-2000"},{"num":24,"score":201,"against":"Zimbabwe","position":"1","inning":"2","venue":"Vidarbha Cricket Association Ground, Nagpur","date":"26 November 2000","result":"Drawn[33]","testMatch":true,"dateObj":"26-Nov-2000"},{"num":25,"score":126,"against":"Australia","position":"1","inning":"3","venue":"M. A. Chidambaram Stadium, Chennai","date":"20 March 2001","result":"Won[34]","testMatch":true,"dateObj":"20-Mar-2001"},{"num":26,"score":155,"against":"South Africa","position":"1","inning":"1","venue":" Goodyear Park, Bloemfontein","date":"03 November 2001","result":"Lost[35]","testMatch":true,"dateObj":"3-Nov-2001"},{"num":27,"score":103,"against":"England","position":"1","inning":"2","venue":"Sardar Patel Stadium, Ahmedabad","date":"13 December 2001","result":"Drawn[36]","testMatch":true,"dateObj":"13-Dec-2001"},{"num":28,"score":176,"against":"Zimbabwe","position":"1","inning":"1","venue":"Vidarbha Cricket Association Ground, Nagpur","date":"24 February 2002","result":"Won[37]","testMatch":true,"dateObj":"24-Feb-2002"},{"num":29,"score":117,"against":"West Indies","position":"1","inning":"2","venue":"Queen's Park Oval, Port of Spain","date":"20 April 2002","result":"Won[38]","testMatch":true,"dateObj":"20-Apr-2002"},{"num":30,"score":193,"against":"England","position":"1","inning":"3","venue":"Headingley, Leeds","date":"23 August 2002","result":"Won[39]","testMatch":true,"dateObj":"23-Aug-2002"},{"num":31,"score":176,"against":"West Indies","position":"2","inning":"3","venue":"Eden Gardens, Kolkata","date":"03 November 2002","result":"Drawn[40]","testMatch":true,"dateObj":"3-Nov-2002"},{"num":32,"score":241,"against":"Australia","position":"1","inning":"4","venue":"Sydney Cricket Ground, Sydney","date":"04 January 2004","result":"Drawn[41]","testMatch":true,"dateObj":"4-Jan-2004"},{"num":33,"score":194,"against":"Pakistan","position":"1","inning":"1","venue":"Multan Cricket Stadium, Multan","date":"29 March 2004","result":"Won[42]","testMatch":true,"dateObj":"29-Mar-2004"},{"num":34,"score":248,"against":"Bangladesh","position":"1","inning":"1","venue":"Bangabandhu National Stadium, Dhaka","date":"12 December 2004","result":"Won[43]","testMatch":true,"dateObj":"12-Dec-2004"},{"num":35,"score":109,"against":"Sri Lanka","position":"1","inning":"2","venue":"Feroz Shah Kotla, New Delhi","date":"22 December 2005","result":"Won[44]","testMatch":true,"dateObj":"22-Dec-2005"},{"num":36,"score":101,"against":"Bangladesh","position":"1","inning":"1","venue":"Bir Shrestha Shahid Ruhul Amin Stadium, Chittagong","date":"19 May 2007","result":"Drawn[45][46]","testMatch":true,"dateObj":"19-May-2007"},{"num":37,"score":122,"against":"Bangladesh","position":"1","inning":"2","venue":"Sher-e-Bangla National Stadium, Mirpur","date":"26 May 2007","result":"Won[47]","testMatch":true,"dateObj":"26-May-2007"},{"num":38,"score":154,"against":"Australia","position":"1","inning":"2","venue":"Sydney Cricket Ground, Sydney","date":"04 January 2008","result":"Lost[48]","testMatch":true,"dateObj":"4-Jan-2008"},{"num":39,"score":153,"against":"Australia","position":"1","inning":"4","venue":"Adelaide Oval, Adelaide","date":"25 January 2008","result":"Drawn[49][50]","testMatch":true,"dateObj":"25-Jan-2008"},{"num":40,"score":109,"against":"Australia","position":"1","inning":"4","venue":"Vidarbha Cricket Association Stadium, Nagpur","date":"06 November 2008","result":"Won[51]","testMatch":true,"dateObj":"6-Nov-2008"},{"num":41,"score":103,"against":"England","position":"2","inning":"1","venue":"M. A. Chidambaram Stadium, Chennai","date":"15 December 2008","result":"Won[52]","testMatch":true,"dateObj":"15 Dec 2008"},{"num":42,"score":160,"against":"New Zealand","position":"1","inning":"1","venue":"Seddon Park, Hamilton","date":"20 March 2009","result":"Won[53]","testMatch":true,"dateObj":"20-Mar-2009"},{"num":43,"score":100,"against":"Sri Lanka","position":"2","inning":"1","venue":"Sardar Patel Stadium, Ahmedabad","date":"20 November 2009","result":"Drawn[54]","testMatch":true,"dateObj":"20-Nov-2009"},{"num":44,"score":105,"against":"Bangladesh","position":"1","inning":"1","venue":"Zohur Ahmed Chowdhury Stadium, Chittagong","date":"18 January 2010","result":"Won[55][56]","testMatch":true,"dateObj":"18-Jan-2010"},{"num":45,"score":143,"against":"Bangladesh","position":"1","inning":"2","venue":"Sher-e-Bangla National Stadium, Mirpur","date":"25 January 2010","result":"Won[57]","testMatch":true,"dateObj":"25-Jan-2010"},{"num":46,"score":100,"against":"South Africa","position":"2","inning":"1","venue":"Vidarbha Cricket Association Stadium, Nagpur","date":"09 February 2010","result":"Lost[58]","testMatch":true,"dateObj":"9-Feb-2010"},{"num":47,"score":106,"against":"South Africa","position":"1","inning":"2","venue":"Eden Gardens, Kolkata","date":"15 February 2010","result":"Won[59]","testMatch":true,"dateObj":"15-Feb-2010"},{"num":48,"score":203,"against":"Sri Lanka","position":"1","inning":"2","venue":"Sinhalese Sports Club Ground, Colombo","date":"28 July 2010","result":"Drawn[60]","testMatch":true,"dateObj":"28-Jul-2010"},{"num":49,"score":214,"against":"Australia","position":"1","inning":"2","venue":"M. Chinnaswamy Stadium, Bangalore","date":"11 October 2010","result":"Won[61]","testMatch":true,"dateObj":"11-Oct-2010"},{"num":50,"score":111,"against":"South Africa","position":"2","inning":"1","venue":"SuperSport Park, Centurion","date":"19 December 2010","result":"Lost[62]","testMatch":true,"dateObj":"19-Dec-2010"},{"num":51,"score":146,"against":"South Africa","position":"1","inning":"3","venue":"Newlands Cricket Ground, Cape Town","date":"04 January 2011","result":"Drawn[63]","testMatch":true,"dateObj":"4-Jan-2011"}];
+// set the dimensions and margins of the graph
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 800 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+var color = d3.scaleOrdinal(d3.schemeCategory10);
+// parse the date / time
+var parseTime = d3.timeParse("%d-%b-%Y");
+ // display date format
+var  dateFormat = d3.timeFormat("%d %b");
+for(var i = 0; i < data.length; i++) {
+  data[i].dateAxis = parseTime(data[i].dateObj);
+}
+// set the ranges
+var x = d3.scaleTime().range([50, width]);
+var y = d3.scaleLinear().range([height, 50]);
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+var svg = d3.select("#Chart1")
+            .append("svg") 
+			 .attr("transform", "translate(0,0)");
+svg.append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+// Scale the range of the data
+  x.domain(d3.extent(data, function(d) { return d.dateAxis; }));
+  y.domain([80, d3.max(data, function(d) { return d.score; })]);
+svg.selectAll("circle")
+     .data(data)
+      .enter()
+     .append("circle")
+     .attr("r", function(d) {return 4;})
+      .attr("cx", function(d) { return x(d.dateAxis); })
+      .attr("cy", function(d) {return y(d.score); })
+      .attr("fill", function(d) { if(d.testMatch){return "green";} else{ return "red"}})
+      .style("stroke", function(d) { if(d.testMatch){return "#666";} else{ return "#999"}})
+      .on("mouseover", function(d) {
+       var htmlStr = "Score:"+ d.score+",<br> Against: "+d.against+"<br/>Venue: "+d.venue+"<br/>Date: "+d.dateObj;
+       div.transition()
+         .duration(200)
+         .style("opacity", .6);
+       div.html(htmlStr)
+         .style("left", (d3.event.pageX + 28) + "px")
+         .style("top", (d3.event.pageY - 50) + "px");
+        // d3.select(this).transition().duration(300).attr("r", 15).style("stroke", "#2ca02c").attr("fill", "#fff");
+       })  
+     .on("mouseout", function(d) {
+       var fillColor = "";
+       div.transition()
+         .duration(500)
+         .style("opacity", 0);
+         if(d.testMatch) {
+            fillColor = "#2ca02c";
+         } else {
+           fillColor = "#dc3912";
+         }
+         d3.select(this).transition().duration(300).style("stroke", function(d) { if(d.testMatch){return "green";} else{ return "red"}}).attr("r", function(d) {return 6 * d.score/100;}).attr("fill", fillColor);
+       });
+// Add the X Axis
+  svg.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x).ticks(18));
+      
+  // Add the Y Axis
+  svg.append("g")
+      .attr("class", "y-axis")
+      .attr("transform", "translate(50,0)")
+      .call(d3.axisLeft(y));
+// text label for the X axis
+  svg.append("text")
+      .attr("x", width/2)
+      .attr("y", height + margin.bottom)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .attr("fill", "#efefef")
+      .text("Year");
+// text label for the y axis
+  svg.append("text")
+      .attr("x", 0 - height/2)
+      .attr("y", 0)
+      .attr("transform", "rotate(-90)")
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .attr("fill", "#efefef")
+      .text("Score");
+</script>
+</div>
+<div id="Odi" class="tabcontent">
+
+ <h3>Intresting Facts</h3>
+ <ul style="list-style-type:disc;">
+  <li>Only player to have scored one hundred international centuries.</li>
+  <li>First batsman to score a double century (200 + runs in an inning) in a One Day International</li>
+  <li>Only player to complete more than 30,000 runs in all format of international cricket.</li>
+    <li>Played six World Cups (1992-2011)</li>
+  <li>highest number of World Cup Man of the Match awards.</li>
+  <li>First ever cricketer to pass 10,000 runs in ODIs</li>
+</ul>  
+<h3 font-weight: bold;>Click on the Country Icon to checkout countrywise statistics</h3>
+  
+<div id="svw">
+<script>
+function msover(x,y) {
+ document.getElementById("country-statsvsAus").style.display = "none"; 
+ document.getElementById("country-statsvsBan").style.display = "none"; 
+ document.getElementById("country-statsvsBer").style.display = "none"; 
+ document.getElementById("country-statsvsEng").style.display = "none"; 
+ document.getElementById("country-statsvsIre").style.display = "none"; 
+ document.getElementById("country-statsvsKey").style.display = "none"; 
+ document.getElementById("country-statsvsNam").style.display = "none"; 
+ document.getElementById("country-statsvsNew").style.display = "none"; 
+ document.getElementById("country-statsvsNet").style.display = "none"; 
+ document.getElementById("country-statsvsPak").style.display = "none"; 
+ document.getElementById("country-statsvsSou").style.display = "none"; 
+ document.getElementById("country-statsvsSri").style.display = "none"; 
+ document.getElementById("country-statsvsUae").style.display = "none"; 
+ document.getElementById("country-statsvsWes").style.display = "none"; 
+ document.getElementById("country-statsvsZim").style.display = "none"; 
+if (y=='AUS') {
+ document.getElementById("country-statsvsAus").style.display = "block"; 
+} else if (y=='BAN'){
+ document.getElementById("country-statsvsBan").style.display = "block"; 
+}
+else if (y=='BER'){
+ document.getElementById("country-statsvsBer").style.display = "block"; 
+}else if (y=='ENG'){
+ document.getElementById("country-statsvsEng").style.display = "block"; 
+}else if (y=='IRE'){
+ document.getElementById("country-statsvsIre").style.display = "block"; 
+}else if (y=='KEY'){
+ document.getElementById("country-statsvsKey").style.display = "block"; 
+}else if (y=='NAM'){
+ document.getElementById("country-statsvsNam").style.display = "block"; 
+}else if (y=='NEW'){
+ document.getElementById("country-statsvsNew").style.display = "block"; 
+}else if (y=='NET'){
+ document.getElementById("country-statsvsNet").style.display = "block"; 
+}else if (y=='PAK'){
+ document.getElementById("country-statsvsPak").style.display = "block"; 
+}else if (y=='SOU'){
+ document.getElementById("country-statsvsSou").style.display = "block"; 
+}else if (y=='SRI'){
+ document.getElementById("country-statsvsSri").style.display = "block"; 
+}else if (y=='UAE'){
+ document.getElementById("country-statsvsUae").style.display = "block"; 
+}else if (y=='WES'){
+ document.getElementById("country-statsvsWes").style.display = "block"; 
+}else if (y=='ZIM'){
+ document.getElementById("country-statsvsZim").style.display = "block"; 
+}
+}
+function msout(x,y) {
+/*
+if (y=='AUS') {
+ document.getElementById("country-statsvsAus").style.display = "none"; 
+} else if (y=='BAN'){
+ document.getElementById("country-statsvsBan").style.display = "none"; 
+}
+else if (y=='BER'){
+ document.getElementById("country-statsvsBer").style.display = "none"; 
+}else if (y=='ENG'){
+ document.getElementById("country-statsvsEng").style.display = "none"; 
+}else if (y=='IRE'){
+ document.getElementById("country-statsvsIre").style.display = "none"; 
+}else if (y=='KEY'){
+ document.getElementById("country-statsvsKey").style.display = "none"; 
+}else if (y=='NAM'){
+ document.getElementById("country-statsvsNam").style.display = "none"; 
+}else if (y=='NEW'){
+ document.getElementById("country-statsvsNew").style.display = "none"; 
+}
+else if (y=='NET'){
+ document.getElementById("country-statsvsNet").style.display = "none"; 
+}else if (y=='PAK'){
+ document.getElementById("country-statsvsPak").style.display = "none"; 
+}else if (y=='SOU'){
+ document.getElementById("country-statsvsSou").style.display = "none"; 
+}else if (y=='SRI'){
+ document.getElementById("country-statsvsSri").style.display = "none"; 
+}else if (y=='UAE'){
+ document.getElementById("country-statsvsUae").style.display = "none"; 
+}else if (y=='WES'){
+ document.getElementById("country-statsvsWes").style.display = "none"; 
+}else if (y=='ZIM'){
+ document.getElementById("country-statsvsZim").style.display = "none"; 
+}
+*/
+}
+</script>
+  <span class="container">
+  <img src="Images/arrow.gif"   width="70px" id="v Australia">
+  </span>
+  <span class="container">
+  <img src="Images/Australia.png"  class="rotate" onclick="msover(this,'AUS')" onmouseout="msout(this, 'AUS')"  width="70px" id="v Australia">
+  <div class="overlay">
+    <div class="text">Australia</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/Bangladesh.png"  class="rotate"  width="70px" onclick="msover(this,'BAN')" onmouseout="msout(this, 'BAN')"  id="v Bangladesh">
+  <div class="overlay">
+    <div class="text">Bangladesh</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/Bermuda.png"   class="rotate" width="70px" onclick="msover(this,'BER')" onmouseout="msout(this, 'BER')"  id="v Bermuda">
+  <div class="overlay">
+    <div class="text">Bermuda</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/England.png"   class="rotate" width="70px" onclick="msover(this,'ENG')" onmouseout="msout(this, 'ENG')"  id="v England">
+  <div class="overlay">
+    <div class="text">England</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/Ireland.png"   class="rotate" width="70px" onclick="msover(this,'IRE')" onmouseout="msout(this, 'IRE')"  id="v Ireland">
+  <div class="overlay">
+    <div class="text">Ireland</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/Kenya.png"   class="rotate" width="70px" onclick="msover(this,'KEY')" onmouseout="msout(this, 'KEY')"  id="v Kenya">
+  <div class="overlay">
+    <div class="text">Kenya</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/Namibia.png"  class="rotate"  width="70px" onclick="msover(this,'NAM')" onmouseout="msout(this, 'NAM')"  id="v Namibia">
+  <div class="overlay">
+    <div class="text">Namibia</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/Netherland.png"   class="rotate" width="70px" onclick="msover(this,'NET')" onmouseout="msout(this, 'NET')"  id="v Netherlands">
+  <div class="overlay">
+    <div class="text">Netherlands</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/NewZealand.png"   class="rotate" width="70px" onclick="msover(this,'NEW')" onmouseout="msout(this, 'NEW')" id="v New Zealand">
+  <div class="overlay">
+    <div class="text">NewZealand</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/Pakistan.png"   class="rotate" width="70px" onclick="msover(this,'PAK')" onmouseout="msout(this, 'PAK')"  id="v Pakistan">
+  <div class="overlay">
+    <div class="text">Pakistan</div>
+  </div>
+  </span>
+  <span class="container">
+  <img src="Images/southafrica.png"   class="rotate" width="70px" onclick="msover(this,'SOU')" onmouseout="msout(this, 'SOU')"  id="v South Africa">
+<div class="overlay">
+    <div class="text">SouthAfrica</div>
+  </div> 
+ </span>
+ <span class="container">
+  <img src="Images/Srilanka.png"   class="rotate" width="70px" onclick="msover(this,'SRI')" onmouseout="msout(this, 'SRI')"  id="v Sri Lanka">
+<div class="overlay">
+    <div class="text">Srilanka</div>
+  </div> 
+ </span>
+ <span class="container">
+  <img src="Images/UAE.png"   class="rotate" width="70px" onclick="msover(this,'UAE')" onmouseout="msout(this, 'UAE')"  id="v U.A.E.">
+<div class="overlay">
+    <div class="text">United Arab Emirate</div>
+  </div> 
+ </span>
+ <span class="container">
+  <img src="Images/westindies.png"   class="rotate" width="70px" onclick="msover(this,'WES')" onmouseout="msout(this, 'WES')"  id="v West Indies">
+<div class="overlay">
+    <div class="text">Westindies</div>
+  </div> 
+ </span>
+ <span class="container">
+  <img src="Images/zimbabwe.png"   class="rotate"  width="70px" onclick="msover(this,'ZIM')" onmouseout="msout(this, 'ZIM')"  id="v Zimbabwe">
+<div class="overlay">
+    <div class="text">Zimbabwe</div>
+  </div> 
+ </span>
+   <span class="container">
+  <img src="Images/end.png"   width="70px" id="v Australia">
+
+  </span>
+ </div>  
+<div id="country-statsvsAus" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Australia</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>3077</td>
+        <td>15</td>
+        <td>9</td>
+        <td>44.59</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsBan" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v bangladesh</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>496</td>
+        <td>2</td>
+        <td>1</td>
+        <td>49.6</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsBer" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v bermumda</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>57</td>
+        <td>1</td>
+        <td>0</td>
+        <td>57</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsEng" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v England</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>1455</td>
+        <td>10</td>
+        <td>2</td>
+        <td>44.09</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsIre" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Ireland</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>42</td>
+        <td>0</td>
+        <td>0</td>
+        <td>21</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsKey" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Kenya</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>647</td>
+        <td>1</td>
+        <td>4</td>
+        <td>107.5</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsNam" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Namibia</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>152</td>
+        <td>1</td>
+        <td>0</td>
+        <td>152</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsNet" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Netherland</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>79</td>
+        <td>1</td>
+        <td>0</td>
+        <td>39.5</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsNew" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v NewZealand</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>1750</td>
+        <td>8</td>
+        <td>5</td>
+        <td>46.05</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsPak" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Pakistan</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>2525</td>
+        <td>16</td>
+        <td>5</td>
+        <td>40.1</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsSou" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v South</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>2001</td>
+        <td>8</td>
+        <td>5</td>
+        <td>35.59</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsSri" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Srilanka</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>3113</td>
+        <td>17</td>
+        <td>8</td>
+        <td>43.86</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsUae" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v UAE</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>81</td>
+        <td>1</td>
+        <td>0</td>
+        <td>81</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsWes" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Westindies</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>1573</td>
+        <td>11</td>
+        <td>4</td>
+        <td>52.59</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+<div id="country-statsvsZim" class="showhim1" style="margin-top: 20px;"><span>
+  <h3>Sachin v Zimbabwe</h3>
+  <div >
+    <h4>Batting</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Runs</th>
+      <th>Half centuries</th>
+      <th>Centuries</th>
+      <th>Average</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>1377</td>
+        <td>5</td>
+        <td>5</td>
+        <td>49.18</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Bowling</h4>
+    <table>
+      <thead>
+      <tr>
+      <th>Total wickets</th>
+      <th>Runs Conceded</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>20</td>
+        <td>886</td> 
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div >
+    <h4>Matches</h4>
+    <table >
+      <thead>
+      <tr>
+      <th>Total Matches</th>
+      <th>Won</th>
+      <th>Lost</th>
+      <th>Draw</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>71</td>
+        <td>23</td>
+        <td>44</td>
+        <td>0</td>  
+      </tr>
+      </tbody>
+    </table>
+  </div>   
+  </span></div> 
+
+
+</div>
+<div id="About" class="tabcontent">
+
+<h3>Life Story</h3>
+<div id="description" style="text-align: justify; color: #ffffff"><text font-size="10px" style="color:white">
+
+In December 2012, Tendulkar announced his retirement from ODIs.He retired from Twenty20 cricket in October 2013 and subsequently announced his retirement from all forms of cricket,retiring on 16 November 2013 after playing his 200th and final Test match, against the West Indies in Mumbai's Wankhede Stadium.Tendulkar played 664 international cricket matches in total, scoring 34,357 runs.
+
+<br><br>
+
+<h3>Personal Information</h3>
+
+Tendulkar received the Arjuna Award in 1994 for his outstanding sporting achievement, the Rajiv Gandhi Khel Ratna award in 1997, India's highest sporting honour, and the Padma Shri and Padma Vibhushan awards in 1999 and 2008, respectively, India's fourth and second highest civilian awards. After a few hours of his final match on 16 November 2013, the Prime Minister's Office announced the decision to award him the Bharat Ratna, India's highest civilian award.
+<br>
+<h3>Cricket</h3>
+
+Cricket is a sport which is played between two teams of eleven players each who score runs (points). This is done by hitting the ball across the boundary, or by running between two sets of three small, wooden posts called wickets. The wickets are at each end of a rectangle of short grass called 'the pitch'. The pitch is inside a much larger oval of grass called the 'area of play'. The area of play is a 30 yard circle inside the cricket ground or stadium.
+
+Today, it is a popular sport in England, Australia, India, Pakistan, Sri Lanka, Bangladesh, South Africa, New Zealand, the West Indies and several other countries such as Afghanistan, Ireland, Kenya, Scotland, the Netherlands and Zimbabwe.
+<br><br>
+</text>
+</div>
+<div id="viz" style="width:600px; margin:auto"></div> 
+<div id="viz1" style="width:600px; margin:auto"></div> 
+
+<script>
+function mouseUp(d,i) {
+console.log("mouseup");
+               /*   var runs = 0;
+					var yearfrom="1989";
+					var yearTo="";
+					
+				  for (var j = 0; j <= i; j++) {
+					  runs += data_points[j].value;
+					   if (i==j)
+					   yearTo=data_points[j].label;
+				  }
+				  
+		   var htmlStr = "From year:-"+ yearfrom+ "<br>"+ "To year:-"+yearTo+"<br>"+ "total run Score:"+ runs;
+	   console.log(htmlStr);
+       div.transition()
+         .duration(200)
+         .style("opacity", .6);
+       div.html(htmlStr)
+         .style("left", (d3.event.pageX + 28) + "px")
+         .style("top", (d3.event.pageY - 50) + "px");  */
+};
+function mouseout(d,i) {
+    console.log("mouseout");
+};		  
+   
+////////////////////////// begin waterfall graph
+          var label_width = 200;
+          var plot_width  = 600;
+          var plot_margin_right = 100;
+          var plot_margin_bottom = 15;
+          var max_width = label_width + plot_width + plot_margin_right;
+          var bar_height = 20;
+          var bolt_time  = 10;
+          var data_points = [{"label":1989,"value":0,"unit":"runs"},{"label":1990,"value":373,"unit":"runs"},{"label":1991,"value":78,"unit":"runs"},{"label":1992,"value":419,"unit":"runs"},{"label":1993,"value":640,"unit":"runs"},{"label":1994,"value":700,"unit":"runs"},{"label":1995,"value":58,"unit":"runs"},{"label":1996,"value":623,"unit":"runs"},{"label":1997,"value":1000,"unit":"runs"},{"label":1998,"value":647,"unit":"runs"},{"label":1999,"value":1088,"unit":"runs"},{"label":2000,"value":575,"unit":"runs"},{"label":2001,"value":1003,"unit":"runs"},{"label":2002,"value":1392,"unit":"runs"},{"label":2003,"value":153,"unit":"runs"},{"label":2004,"value":915,"unit":"runs"},{"label":2005,"value":444,"unit":"runs"},{"label":2006,"value":267,"unit":"runs"},{"label":2007,"value":779,"unit":"runs"},{"label":2008,"value":1063,"unit":"runs"},{"label":2009,"value":541,"unit":"runs"},{"label":2010,"value":1562,"unit":"runs"},{"label":2011,"value":756,"unit":"runs"},{"label":2012,"value":357,"unit":"runs"}];
+		  var data_points1 = [{"label":1989,"value":0,"unit":"runs"},{"label":1990,"value":239,"unit":"runs"},{"label":1991,"value":417,"unit":"runs"},{"label":1992,"value":704,"unit":"runs"},{"label":1993,"value":319,"unit":"runs"},{"label":1994,"value":1089,"unit":"runs"},{"label":1995,"value":444,"unit":"runs"},{"label":1996,"value":1611,"unit":"runs"},{"label":1997,"value":1011,"unit":"runs"},{"label":1998,"value":1894,"unit":"runs"},{"label":1999,"value":843,"unit":"runs"},{"label":2000,"value":1328,"unit":"runs"},{"label":2001,"value":904,"unit":"runs"},{"label":2002,"value":741,"unit":"runs"},{"label":2003,"value":1141,"unit":"runs"},{"label":2004,"value":812,"unit":"runs"},{"label":2005,"value":412,"unit":"runs"},{"label":2006,"value":628,"unit":"runs"},{"label":2007,"value":1425,"unit":"runs"},{"label":2008,"value":460,"unit":"runs"},{"label":2009,"value":972,"unit":"runs"},{"label":2010,"value":204,"unit":"runs"},{"label":2011,"value":513,"unit":"runs"},{"label":2012,"value":315,"unit":"runs"}];
+          var max_height = (data_points.length * bar_height) + plot_margin_bottom;
+          var total_time = 0;
+          var width_per_sec = 0;
+		  for(var i = 0; i < data_points.length; i++) {
+              total_time += data_points[i].value;
+          }
+          width_per_sec = plot_width / total_time;
+          
+          function get_x(data, index) {
+              var x = label_width;
+              if (index > 0) {
+                  //x coordinate for nth element =
+                  //(width of the (n-1)th element) + 1
+                  for (var j = 0; j < index; j++) {
+                      var time = data_points[j].value;
+                      x += time * width_per_sec;
+                  }
+              }
+			
+              return x;
+          }
+          function get_cumulative_runs(index) {
+              var runs = 0;
+              for (var j = 0; j <= index; j++) {
+                  runs += data_points[j].value;
+              }
+              return runs;
+          }
+          		  
+		   var svg = d3.select("#viz")
+          .append("svg")
+          .attr("width", max_width)
+          .attr("height", max_height + 10).attr("transform", "translate(-100,0)")
+		  ;
+          //y axis line built here
+          svg.append("line")
+          .attr("x1", label_width - 0.5)
+          .attr("y1", 10)
+          .attr("x2", label_width - 0.5)
+          .attr("y2", function() { return data_points.length * bar_height + 10})
+          .attr("stroke", "white");
+		  
+  
+          //x axis  drawn here
+          svg.append("line")
+          .attr("x1", label_width - 1)
+          .attr("y1", function() { return data_points.length * bar_height - 0.5 + 10 })
+          .attr("x2", plot_width + label_width)
+          .attr("y2", function() { return data_points.length * bar_height - 0.5 + 10})
+          .attr("stroke", "white");
+		  
+               
+          //the y-axis labels
+          svg.selectAll("label")
+          .data(data_points)
+          .enter()
+          .append("text")		  
+          .text(function(d) { return d.label })
+          .attr("x", 195)
+          .attr("y", function(d, i) { return (i * bar_height) + bar_height + 10})
+          .attr("dy", 0)
+          .attr("class", "small")
+          .attr("text-anchor", "end")		  
+		  .attr("stroke", "white")
+          .attr("id", function(d) { return "l_" + d.label });
+             
+          //the bars
+          svg.selectAll("waterfall")
+          .data(data_points)
+          .enter()
+          .append("rect")
+          .attr("x", function(d, i) { return Math.ceil(get_x(d, i)); })
+          .attr("y", function(d, i) { return i * bar_height + 10; })
+          .attr("height", bar_height)
+          //.attr("fill", "#999")
+		  .attr("fill", function(d) {							
+							return "red";
+						  })
+          .attr("width", function(d) { return Math.floor(d.value * width_per_sec); })
+          .attr("class", "bar")
+		  .attr("stroke", "red")
+          .attr("value", function(d) { return d.value; })
+			.on("mouseover", mouseUp)
+		  .on("click", mouseUp)
+          .on("mouseout", mouseout)
+		  ;
+                  
+          svg.selectAll("waterfall")
+          .data(data_points)
+          .enter()
+          .append("line")
+          .attr("x1", function(d, i) { return get_x(d, i) + (d.value * width_per_sec); })
+          .attr("y1", function(d, i) { return (i * bar_height) + 10; })
+          .attr("x2", function(d, i) { return get_x(d, i) + (d.value * width_per_sec) + 10 })
+          .attr("y2", function(d, i)  { return (i * bar_height) - bar_height/2 + 10; })
+          //.attr("stroke", "white")
+          .attr("stroke-width", 1)
+          .attr("opacity", 1)
+          //the bar labels
+          svg.selectAll("label")
+          .data(data_points)
+          .enter().append("svg:text")
+          .text(function(d) { return d.value + (d.unit ? d.unit : 'ms') })
+          .attr("x", function(d, i) { return get_x(d, i) + d.value * width_per_sec + 2 + 10 })
+          .attr("y", function(d, i) { return (i * bar_height) + bar_height + 10 })
+          .attr("dy", -10)
+          .attr("class", "small")
+		  .attr("fill", "white")
+.on("mouseover", mouseUp)		  
+		 
+		 
+///////////////////////// end ODI waterfall
+////////////////////////// begin Test waterfall graph
+          var label_width = 200;
+          var plot_width  = 600;
+          var plot_margin_right = 100;
+          var plot_margin_bottom = 15;
+          var max_width = label_width + plot_width + plot_margin_right;
+          var bar_height = 20;
+          var bolt_time  = 10;
+          var data_points = [{"label":1989,"value":0,"unit":"runs"},{"label":1990,"value":239,"unit":"runs"},{"label":1991,"value":417,"unit":"runs"},{"label":1992,"value":704,"unit":"runs"},{"label":1993,"value":319,"unit":"runs"},{"label":1994,"value":1089,"unit":"runs"},{"label":1995,"value":444,"unit":"runs"},{"label":1996,"value":1611,"unit":"runs"},{"label":1997,"value":1011,"unit":"runs"},{"label":1998,"value":1894,"unit":"runs"},{"label":1999,"value":843,"unit":"runs"},{"label":2000,"value":1328,"unit":"runs"},{"label":2001,"value":904,"unit":"runs"},{"label":2002,"value":741,"unit":"runs"},{"label":2003,"value":1141,"unit":"runs"},{"label":2004,"value":812,"unit":"runs"},{"label":2005,"value":412,"unit":"runs"},{"label":2006,"value":628,"unit":"runs"},{"label":2007,"value":1425,"unit":"runs"},{"label":2008,"value":460,"unit":"runs"},{"label":2009,"value":972,"unit":"runs"},{"label":2010,"value":204,"unit":"runs"},{"label":2011,"value":513,"unit":"runs"},{"label":2012,"value":315,"unit":"runs"}];
+		  var data_points1 = [{"label":1989,"value":0,"unit":"runs"},{"label":1990,"value":239,"unit":"runs"},{"label":1991,"value":417,"unit":"runs"},{"label":1992,"value":704,"unit":"runs"},{"label":1993,"value":319,"unit":"runs"},{"label":1994,"value":1089,"unit":"runs"},{"label":1995,"value":444,"unit":"runs"},{"label":1996,"value":1611,"unit":"runs"},{"label":1997,"value":1011,"unit":"runs"},{"label":1998,"value":1894,"unit":"runs"},{"label":1999,"value":843,"unit":"runs"},{"label":2000,"value":1328,"unit":"runs"},{"label":2001,"value":904,"unit":"runs"},{"label":2002,"value":741,"unit":"runs"},{"label":2003,"value":1141,"unit":"runs"},{"label":2004,"value":812,"unit":"runs"},{"label":2005,"value":412,"unit":"runs"},{"label":2006,"value":628,"unit":"runs"},{"label":2007,"value":1425,"unit":"runs"},{"label":2008,"value":460,"unit":"runs"},{"label":2009,"value":972,"unit":"runs"},{"label":2010,"value":204,"unit":"runs"},{"label":2011,"value":513,"unit":"runs"},{"label":2012,"value":315,"unit":"runs"}];
+          var max_height = (data_points.length * bar_height) + plot_margin_bottom;
+          var total_time = 0;
+          var width_per_sec = 0;
+		  for(var i = 0; i < data_points.length; i++) {
+              total_time += data_points[i].value;
+          }
+          width_per_sec = plot_width / total_time;
+          
+          function get_x(data, index) {
+              var x = label_width;
+              if (index > 0) {
+                  //x coordinate for nth element =
+                  //(width of the (n-1)th element) + 1
+                  for (var j = 0; j < index; j++) {
+                      var time = data_points[j].value;
+                      x += time * width_per_sec;
+                  }
+              }
+              return x;
+          }
+          function get_cumulative_runs(index) {
+              var runs = 0;
+              for (var j = 0; j <= index; j++) {
+                  runs += data_points[j].value;
+              }
+              return runs;
+          }
+////
+          		  
+		   var svg = d3.select("#viz1")
+          .append("svg")
+          .attr("width", max_width)
+		  .attr("height", max_height)
+         .attr("height", max_height + 10).attr("transform", "translate(-100,0)")
+		  ;
+          //y axis line built here
+		  
+          svg.append("line")
+          .attr("x1", label_width - 0.5)
+          .attr("y1", 10)
+          .attr("x2", label_width - 0.5)
+          .attr("y2", function() { return data_points.length * bar_height + 10})
+          .attr("stroke", "white");
+		  
+  
+          //x axis  drawn here
+          svg.append("line")
+          .attr("x1", label_width - 1)
+          .attr("y1", function() { return data_points.length * bar_height - 0.5 + 10 })
+          .attr("x2", plot_width + label_width)
+          .attr("y2", function() { return data_points.length * bar_height - 0.5 + 10})
+          .attr("stroke", "white");
+		  
+               
+          //the y-axis labels
+          svg.selectAll("label")
+          .data(data_points)
+          .enter()
+          .append("text")
+          .text(function(d) { return d.label })
+          .attr("x", 195)
+          .attr("y", function(d, i) { return (i * bar_height) + bar_height + 10})
+          .attr("dy", 0)
+          .attr("class", "small")
+          .attr("text-anchor", "end")
+		  .attr("stroke", "white")
+          .attr("id", function(d) { return "l_" + d.label });
+		  
+                
+          //the bars
+          svg.selectAll("waterfall")
+          .data(data_points)
+          .enter()
+          .append("rect")		
+          .attr("x", function(d, i) { return Math.ceil(get_x(d, i)); })
+          .attr("y", function(d, i) { return i * bar_height + 10; })
+          .attr("height", bar_height)
+		//  .transition().duration(3000).delay(1000)
+          //.attr("fill", "#999")
+		  .attr("fill", function(d) {							
+							return "green";
+						  })
+          .attr("width", function(d) { return Math.floor(d.value * width_per_sec); })		  
+          .attr("class", "bar")
+		 // .attr("stroke", "red")
+          .attr("value", function(d) { return d.value; })	   
+        /*  .on("mouseout", function(d) {
+              //undo underline and bold
+              //svg.select("#l_" + d.label).style("text-decoration", "none").style("font-weight", "normal");
+              //hide the guide
+              svg.select("#g_" + d.label).style("display", "none");
+          }) */
+         /* .on("click", function(d) {
+            //  var url = base_url + d.label;
+			updateBars(d.label);
+           //   window.open(url);
+          })  */
+		  ;
+                  
+          svg.selectAll("waterfall")
+          .data(data_points)
+          .enter()
+          .append("line")
+          .attr("x1", function(d, i) { return get_x(d, i) + (d.value * width_per_sec); })
+          .attr("y1", function(d, i) { return (i * bar_height) + 10; })
+          .attr("x2", function(d, i) { return get_x(d, i) + (d.value * width_per_sec) + 10 })
+          .attr("y2", function(d, i)  { return (i * bar_height) - bar_height/2 + 10; })
+        //  .attr("stroke", "white")
+          .attr("stroke-width", 1)
+          .attr("opacity", 1)
+          //the bar labels
+          svg.selectAll("label")
+          .data(data_points)
+          .enter().append("svg:text")
+          .text(function(d) { return d.value + (d.unit ? d.unit : 'ms') })
+          .attr("x", function(d, i) { return get_x(d, i) + d.value * width_per_sec + 2 + 10 })
+          .attr("y", function(d, i) { return (i * bar_height) + bar_height + 10 })
+          .attr("dy", -10)
+          .attr("class", "small")
+		  .attr("fill", "white")
+		 
+		  
+///////////////////////// end ODI waterfall
+</script>
+
+<div id="careertable"> 
+<div style="left: 0; margin-left: 0px; min-height: 100%; position: relative; top: 23px;"> 
+<table width="100%" border="0" cellpadding="0" cellspacing="0" height="100%">
+  <tr>
+		<td>	
+      <table border="0" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top">
+						<table border="0" width="100%" cellpadding="2" cellspacing="0">
+							<tr>
+								<td colspan="2">&nbsp;
+									<span >
+									Sachin Tendulkar&nbsp;&nbsp;(India)
+									</span>
+								</td>
+								
+							</tr>
+							<tr>
+								<td colspan="3">&nbsp;</td>
+							</tr>																	
+							<tr>
+								<td  width="100">&nbsp;Full Name:</td>
+								<td width="450">
+									Sachin R Tendulkar&nbsp;
+								</td>
+								
+							</tr>				
+							<tr>
+								<td >&nbsp;Born:</td>
+								<td>
+									24/04/1973
+								</td>
+								
+							</tr>
+							<tr>
+								<td >
+								
+									&nbsp;Current Age:
+								
+								</td>
+								<td>
+									46 years 93 days								
+								</td>
+														
+							</tr>
+							<tr>
+								<td >&nbsp;Bats:</td>
+								<td>
+									Right Handed
+								</td>
+															
+							</tr>
+							<tr>
+								<td >&nbsp;Bowls:</td>
+								<td colspan="2">
+									Right Arm Medium
+								</td>
+							</tr>		
+						</table>
+						<br>
+
+						
+            <table border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								
+								<td valign="top">
+									<table border="0" cellpadding="1" width="244">
+										<tr>
+											<td><span><a class="buttonabout"><h style="color:Green;">Tests</h></a></span><br>
+										<span >(200 matches)																								
+												</span>
+											</td>
+										</tr>											
+									</table>
+								</td>
+								<td width="2">&nbsp;</td>
+								
+								<td valign="top">
+									<table border="0" cellpadding="1" width="244">
+										<tr>
+											<td><span >
+											<a class="buttonabout" ><h style="color:Red;">One Day Internationals</h></a></span><br>
+												<span>(463
+												  matches)
+												
+												</span>
+											</td>
+										</tr>	
+									</table>
+								</td>								
+								<td width="2">&nbsp;</td>
+																
+								<td valign="top">
+									<table border="0" cellpadding="1" width="244">
+										<tr>
+											<td><span ><a class="buttonabout" ><h style="color:Orange;">Twenty20 Internationals</h></a></span>
+											
+												<span >(1
+													match)
+												
+												</span>
+											</td>
+										</tr>	
+									</table>
+								</td>								
+								<td width="2">&nbsp;</td>
+																
+								<td valign="top">
+									<table border="0" cellpadding="1"  width="244">
+										<tr>
+										<td><span ><a class="buttonabout" ><h style="color:purple;">IPL</h></a></span>
+											
+												<span >(78
+													match)
+												
+												</span>
+											</td>			
+										</tr>	
+									</table>
+								</td>								
+																
+							</tr>		
+							<tr>
+								
+								<td valign="top">
+									<table border="0" cellpadding="1" cellspacing="1" >
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Batting
+											</td>
+										</tr>
+										<tr>
+											<td width="180">
+												<span >Innings:</span>
+											</td>
+											<td  width="45">
+												<p>329</p>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Not Outs:</span>
+											</td>
+											<td >
+												33
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Aggregate:</span>
+											</td>
+											<td >
+												15921
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Highest Score:</span>
+											</td>
+											<td >
+												<p>248*</p>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Average:</span>
+											</td>
+											<td >
+												53.79  
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >50s:</span>
+											</td>
+											<td >
+                          68
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >100s:</span>
+											</td>
+											<td >
+												
+                          <p">51</p>
+																							
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Ducks:</span>
+											</td>
+											<td >
+												14
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >4s:</span>
+											</td>
+											<td >
+												2058
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >6s:</span>
+											</td>
+											<td >
+												69
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Scoring Rate</span>
+											</td>
+											<td >
+												N/A
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Bowling
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Overs:</span>
+											</td>
+											<td >
+												706.4
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Runs Conceded:</span>
+											</td>
+											<td >
+												2492
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Wickets:</span>
+											</td>
+											<td >
+												
+													<p>46</p>
+												
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Average:</span>
+											</td>
+											<td >
+												54.17
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >5 Wickets in  Innings:</span>
+											</td>
+											<td >
+												
+													0
+																							
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >10 Wickets in Match:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Best - Innings:</span>
+											</td>
+											<td >
+												
+													<p>3/10</p>
+												
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Best - Match:</span>
+											</td>
+											<td >
+												
+													<p>3/14</p>
+																									
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Economy Rate:</span>
+											</td>
+											<td >
+												3.53
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Strike Rate:</span>
+											</td>
+											<td >
+												92.17
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Fielding
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Catches:</span>
+											</td>
+											<td >
+												115
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Innings:</span>
+											</td>
+											<td >
+												3
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Match:</span>
+											</td>
+											<td >
+												3
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Wicket Keeping
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Catches:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Stumpings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Match:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Dismissals in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Dismissals in Match:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>							
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Captaincy
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Won/Lost:</span>
+											</td>
+											<td >
+													4/9                        
+											</td>
+										</tr>
+									</table>
+								</td>
+								<td width="2">&nbsp;</td>
+								
+								<td align="top">
+									<table border="0" cellpadding="1" cellspacing="1" >
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Batting
+											</td>
+										</tr>
+										<tr>
+											<td width="180">
+												<span >Innings:</span>
+											</td>
+											<td  width="45">
+												
+													<p>452</p>
+													
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Not Outs:</span>
+											</td>
+											<td >
+												41
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Aggregate:</span>
+											</td>
+											<td >
+												18426
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Highest Score:</span>
+											</td>
+											<td >
+												<p>200*</p>
+											</td>											
+										</tr>
+										<tr>
+											<td>
+												<span >Average:</span>
+											</td>
+											<td >
+												44.83  
+											</td>
+										</tr>
+										</tr>
+										<tr>
+											<td>
+												<span >50s:</span>
+											</td>
+											<td >
+                          96
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >100s:</span>
+											</td>
+											<td >
+												
+                          <p>49</p>
+																							
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Ducks:</span>
+											</td>
+											<td >
+												20
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >4s:</span>
+											</td>
+											<td >
+												2016
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >6s:</span>
+											</td>
+											<td >
+												195
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Scoring Rate</span>
+											</td>
+											<td >
+												86.24
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Bowling
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Overs:</span>
+											</td>
+											<td >
+												1342.2
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Runs Conceded:</span>
+											</td>
+											<td >
+												6850
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Wickets:</span>
+											</td>
+											<td >
+												
+													<p>154</p>
+												
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Average:</span>
+											</td>
+											<td >
+												44.48
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >4 Wickets in Innings:</span>
+											</td>
+											<td >
+												
+													<p>6</p>
+																							
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >5 Wickets in Innings:</span>
+											</td>
+											<td >
+												
+													<p>2</p>
+																							
+											</td>
+										</tr>								
+										<tr>
+											<td>
+												<span >Best:</span>
+											</td>
+											<td >
+																									
+													<p>5/32</p>
+																								
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Economy Rate:</span>
+											</td>
+											<td >
+												5.10
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Strike Rate:</span>
+											</td>
+											<td >
+												52.30
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Fielding
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Catches:</span>
+											</td>
+											<td >
+												140
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Innings:</span>
+											</td>
+											<td >
+												4
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>										
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Wicket Keeping
+											</td>
+										</tr>
+											<td>
+												<span >Catches:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Stumpings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>										
+										<tr>
+											<td>
+												<span >Most Dismissals in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>										
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>							
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Captaincy
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Won/Lost:</span>
+											</td>
+											<td >
+													23/42
+											</td>
+										</tr>
+									</table>
+								</td>
+								<td width="2">&nbsp;</td>
+																
+								<td valign="top">
+									<table border="0" cellpadding="1" cellspacing="1" >
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Batting
+											</td>
+										</tr>
+										<tr>
+											<td width="180">
+												<span >Innings:</span>
+											</td>
+											<td  width="45">
+												
+													<p>1</p>
+													
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Not Outs:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Aggregate:</span>
+											</td>
+											<td >
+												10
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Highest Score:</span>
+											</td>
+											<td >
+												<p>10</p>
+											</td>                      
+										</tr>
+										<tr>
+											<td>
+												<span >Average:</span>
+											</td>
+											<td >
+												10.00  
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >50s:</span>
+											</td>
+											<td >
+												
+                          0
+																							
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >100s:</span>
+											</td>
+											<td >
+												
+                          0
+																							
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Ducks:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >4s:</span>
+											</td>
+											<td >2
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >6s:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Scoring Rate</span>
+											</td>
+											<td >
+												83.33
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Bowling
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Overs:</span>
+											</td>
+											<td >
+												2.3
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Runs Conceded:</span>
+											</td>
+											<td >
+												12
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Wickets:</span>
+											</td>
+											<td >
+												
+													<p>1</p>
+												
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Average:</span>
+											</td>
+											<td >
+												12.00
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >4 Wickets in Innings:</span>
+											</td>
+											<td >
+												
+													0
+																							
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >5 Wickets in Innings:</span>
+											</td>
+											<td >
+												
+													0
+																							
+											</td>
+										</tr>										
+										<tr>
+											<td>
+												<span >Best:</span>
+											</td>
+											<td >
+												
+													<p>1/12</p>
+																									
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Economy Rate:</span>
+											</td>
+											<td >
+												4.80
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Strike Rate:</span>
+											</td>
+											<td >
+												15.00
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Fielding
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Catches:</span>
+											</td>
+											<td >
+												1
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Innings:</span>
+											</td>
+											<td >
+												1
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>										
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Wicket Keeping
+											</td>
+										</tr>
+											<td>
+												<span >Catches:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Stumpings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>										
+										<tr>
+											<td>
+												<span >Most Dismissals in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>							
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Captaincy
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Won/Lost:</span>
+											</td>
+											<td >
+													
+											</td>
+										</tr>
+									</table>
+								</td>
+								<td width="2">&nbsp;</td>
+								
+									<td valign="top">
+									<table border="0" cellpadding="1" cellspacing="1" >
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Batting
+											</td>
+										</tr>
+										<tr>
+											<td width="180">
+												<span >Innings:</span>
+											</td>
+											<td  width="45">
+												
+													<p>78</p>
+													
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Not Outs:</span>
+											</td>
+											<td >
+												11
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Aggregate:</span>
+											</td>
+											<td >
+												2334
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Highest Score:</span>
+											</td>
+											<td >
+												<p>100*</p>
+											</td>                      
+										</tr>
+										<tr>
+											<td>
+												<span >Average:</span>
+											</td>
+											<td >
+												34.84  
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >50s:</span>
+											</td>
+											<td >
+                         13
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >100s:</span>
+											</td>
+											<td >
+                        1
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Ducks:</span>
+											</td>
+											<td >
+												4
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >4s:</span>
+											</td>
+											<td >295
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >6s:</span>
+											</td>
+											<td >
+												29
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Scoring Rate</span>
+											</td>
+											<td >
+												119.82
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td colspan="2" style="font-weight: bold; height: 20px">
+												Bowling
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Overs:</span>
+											</td>
+											<td >
+												6.0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Runs Conceded:</span>
+											</td>
+											<td >
+												58
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Wickets:</span>
+											</td>
+											<td >
+												
+													0
+												
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Average:</span>
+											</td>
+											<td >
+												N/A
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >4 Wickets in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >5 Wickets in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>										
+										<tr>
+											<td>
+												<span >Best:</span>
+											</td>
+											<td >
+												
+													<a >0/0</a>
+																									
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Economy Rate:</span>
+											</td>
+											<td >
+												9.67
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Strike Rate:</span>
+											</td>
+											<td >
+												N/A
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Fielding
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Catches:</span>
+											</td>
+											<td >
+												23
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Innings:</span>
+											</td>
+											<td >
+												4
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>										
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Wicket Keeping
+											</td>
+										</tr>
+											<td>
+												<span >Catches:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Stumpings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Most Catches in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>										
+										<tr>
+											<td>
+												<span >Most Dismissals in Innings:</span>
+											</td>
+											<td >
+												0
+											</td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td><td>&nbsp;</td>
+										</tr>
+										<tr>
+											<td colspan="2">&nbsp;</td>
+										</tr>							
+										<tr>
+											<td  colspan="2" style="font-weight: bold; height: 20px">
+												Captaincy
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<span >Won/Lost:</span>
+											</td>
+											<td >
+													30/21
+											</td>
+										</tr>
+									</table>
+								</td>																					
+							</tr>							
+						</table>
+          </td>
+        </tr>
+  </table>      
+</div> 
+</div></div>
+<div id="Ipl" class="tabcontent">
+ <p>IPL Select the year from the dropdown to view Run scored against countries in both the format of games i.e. ODI and test matches</p>
+<div id="Ipl1"> 
+<script>
+console.log('inside ipl');
+</script>
+</div>
+</div>
+<script>
+function openPage(pageName,elmnt,color) {
+console.log(pageName);
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.backgroundColor = "";
+  }
+  document.getElementById(pageName).style.display = "block";
+  elmnt.style.backgroundColor = color;
+}
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+</script>
+   
+</body>
 </html>
